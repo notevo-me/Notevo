@@ -2,21 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+
 export default function Footer() {
-  const { resolvedTheme } = useTheme();
-  const [IconImage, setIconImage] = useState<string>("/Notevo-logo.svg");
-  const [svgFillColor, setSvgFillColor] = useState<string>("#efefef");
-  useEffect(() => {
-    if (resolvedTheme !== "dark") {
-      setIconImage("/Notevo-logo.svg");
-      setSvgFillColor("#efefef");
-    } else {
-      setIconImage("/DarkNotevo-logo.svg");
-      setSvgFillColor("#222222");
-    }
-  }, [resolvedTheme]);
   return (
     <>
       <svg
@@ -30,12 +17,12 @@ export default function Footer() {
         <path
           transform="rotate(180) translate(-1440, -60)"
           d="M-100 58C-100 58 218.416 36.3297 693.5 36.3297C1168.58 36.3297 1487 58 1487 58V-3.8147e-06H-100V58Z"
-          fill={svgFillColor}
-        ></path>
+          fill="#efefef"
+        />
       </svg>
-      <footer className=" relative w-full text-foreground py-10 bg-muted">
-        <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-16 ">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 ">
+      <footer className="relative w-full text-foreground py-10 bg-muted">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <Link
                 href="/"
@@ -46,7 +33,7 @@ export default function Footer() {
                 }}
               >
                 <Image
-                  src={IconImage}
+                  src="/Notevo-logo.svg"
                   alt="Notevo logo"
                   className="pb-2 hover:opacity-50"
                   width={50}
@@ -56,7 +43,7 @@ export default function Footer() {
               <h2 className="text-2xl font-bold text-primary">Notevo</h2>
               <p className="mt-2 text-muted-foreground">
                 Notes without the hassle.
-              </p>{" "}
+              </p>
             </div>
 
             <div>
@@ -76,7 +63,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className=" text-lg font-semibold text-foreground">Legal</h3>
+              <h3 className="text-lg font-semibold text-foreground">Legal</h3>
               <ul className="mt-2 space-y-2 text-muted-foreground">
                 <li>
                   <Link
@@ -100,8 +87,9 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+
             <div>
-              <h3 className=" text-lg font-semibold text-foreground">Social</h3>
+              <h3 className="text-lg font-semibold text-foreground">Social</h3>
               <ul className="mt-2 space-y-2 text-muted-foreground">
                 <li>
                   <Link
@@ -115,13 +103,11 @@ export default function Footer() {
               </ul>
             </div>
           </div>
+
           <div className="mt-5 border-t border-primary/20 pt-5 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-start text-muted-foreground text-sm">
               Copyright © 2025-{new Date().getFullYear()} Notevo. All rights
               reserved.
-            </div>
-            <div>
-              <ThemeToggle />
             </div>
           </div>
         </div>
