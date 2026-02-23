@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { NOISE_PNG } from "@/lib/data";
 function SignInWithMagicLink({
   handleLinkSent,
 }: {
@@ -103,38 +104,38 @@ function SignInWithMagicLink({
 }
 
 export default function SignInPage() {
-  const { resolvedTheme } = useTheme();
   const [step, setStep] = useState<"signIn" | "linkSent">("signIn");
-  const [Timage, setTimage] = useState<string>("/NotevoDarkNotePic.svg");
+  const [Timage, setTimage] = useState<string>("/NotevoLightNotePic.svg");
   const [IconImage, setIconImage] = useState<string>("/Notevo-logo.svg");
-  useEffect(() => {
-    if (resolvedTheme == "dark") {
-      setTimage("/NotevoDarkNotePic.svg");
-      setIconImage("/DarkNotevo-logo.svg");
-    } else {
-      setTimage("/NotevoLightNotePic.svg");
-      setIconImage("/Notevo-logo.svg");
-    }
-  }, [resolvedTheme]);
   return (
-    <div className=" relative flex min-h-svh flex-col items-center justify-center p-6 md:p-10 overflow-hidden">
-      <div className="absolute inset-0 h-full w-full bg-transparent ">
-        {/* Right Masked Concentric Squares - Light Pattern */}
+    <div className=" force-light relative flex min-h-svh flex-col items-center justify-center p-6 md:p-10 overflow-hidden">
+      {/* Real PNG grain noise overlay — always light mode, fixed values */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute inset-0 mask-image-gradient"
+        style={{
+          backgroundImage: `url(${NOISE_PNG})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+          opacity: 0.07,
+          mixBlendMode: "multiply",
+          zIndex: 5,
+        }}
+      />
+      <div className="absolute inset-0 -z-[1] h-full w-full bg-background ">
         <div
-          className="absolute inset-0 -z-[900] pointer-events-none"
+          className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage: `
-        repeating-linear-gradient(-180deg, transparent, transparent 5px, rgba(75, 85, 99, 0.06) 5px, rgba(75, 85, 99, 0.06) 5px, transparent 6px, transparent 70px),
-
-        repeating-linear-gradient(-180deg, transparent, transparent 5px, rgba(107, 114, 128, 0.04) 5px, rgba(107, 114, 128, 0.04) 10px, transparent 5px, transparent 70px)
-      `,
+              repeating-linear-gradient(-180deg, transparent, transparent 5px, rgba(75, 85, 99,0.4) 3px, rgba(75, 85, 99, 0.2) 7px, transparent 6px, transparent 112px),
+              repeating-linear-gradient(-180deg, transparent, transparent 5px, rgba(107, 114, 128, 0.4) 3px, rgba(107, 114, 128, 0.2) 3px, transparent 5px, transparent 70px)
+            `,
           }}
         />
-        {/* Your Content/Components */}
       </div>
       <div className="w-full relative max-w-sm Desktop:max-w-[53rem]  rounded-lg">
         <motion.svg
-          className="absolute -z-50 Desktop:-top-16 -top-14 Desktop:-left-16 -left-12 w-40 h-40 md:w-48 md:h-48 text-primary/80"
+          className="absolute z-[2] Desktop:-top-16 -top-14 Desktop:-left-16 -left-12 w-40 h-40 md:w-48 md:h-48 text-primary/80"
           viewBox="0 0 120 120"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -162,7 +163,7 @@ export default function SignInPage() {
             </Badge>
           </span>
 
-          <Card className="overflow-hidden bg-background border border-border shadow-xl shadow-primary/10">
+          <Card className="overflow-hidden z-[5] bg-background border border-border shadow-xl shadow-primary/10">
             <CardContent className="grid p-0 md:grid-cols-2">
               <div className="p-6 md:p-8">
                 <div className="flex flex-col gap-6">
