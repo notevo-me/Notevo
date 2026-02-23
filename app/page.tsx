@@ -23,18 +23,21 @@ export default function HomePage() {
 
   if (!viewer) {
     return (
-      <div className=" relative flex flex-col min-h-screen">
-        <Navbar />
-        <div className="flex-grow flex-1">
-          <HeroSection />
-          <HowToStartSection />
-          <FeaturesSection />
-          <MoreAboutMe />
-          {/* <Testimonials /> */}
-          {/* <PricingSection /> */}
-          <SignUpToday />
+      // Force light mode for the entire landing page regardless of user theme
+      <div className="force-light">
+        <div className="relative flex flex-col min-h-screen bg-background text-foreground">
+          <Navbar />
+          <div className="flex-grow flex-1">
+            <HeroSection />
+            <HowToStartSection />
+            <FeaturesSection />
+            <MoreAboutMe />
+            {/* <Testimonials /> */}
+            {/* <PricingSection /> */}
+            <SignUpToday />
+          </div>
+          {isClient && <Footer />}
         </div>
-        {isClient && <Footer />}
       </div>
     );
   } else {

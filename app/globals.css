@@ -181,6 +181,46 @@
   }
 }
 
+/* Force light mode on any element regardless of .dark on <html> */
+.force-light {
+  --placeholder: #644a40;
+  --selection-background: #644a403c;
+  --selection-color: #000000;
+  --background: 0 0% 97.6471%;
+  --foreground: 0 0% 12.5490%;
+  --card: 0 0% 98.8235%;
+  --card-foreground: 0 0% 12.5490%;
+  --popover: 0 0% 98.8235%;
+  --popover-foreground: 0 0% 12.5490%;
+  --primary: 16.6667 21.9512% 32.1569%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 34.0541 100.0000% 85.4902%;
+  --secondary-foreground: 16.2712 50.4274% 22.9412%;
+  --muted: 0 0% 93.7255%;
+  --muted-foreground: 0 0% 39.2157%;
+  --accent: 0 0% 90.9804%;
+  --accent-foreground: 0 0% 12.5490%;
+  --destructive: 10.1639 77.8723% 53.9216%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 84.7059%;
+  --input: 0 0% 84.7059%;
+  --ring: 16.6667 21.9512% 32.1569%;
+  --chart-1: 16.6667 21.9512% 32.1569%;
+  --chart-2: 34.0541 100.0000% 85.4902%;
+  --chart-3: 0 0% 90.9804%;
+  --chart-4: 34.5763 100.0000% 88.4314%;
+  --chart-5: 16.5000 24.3902% 32.1569%;
+  --sidebar: 0 0% 98.4314%;
+  --sidebar-foreground: 0 0% 14.5098%;
+  --sidebar-primary: 0 0% 20.3922%;
+  --sidebar-primary-foreground: 0 0% 98.4314%;
+  --sidebar-accent: 0 0% 96.8627%;
+  --sidebar-accent-foreground: 0 0% 20.3922%;
+  --sidebar-border: 0 0% 92.1569%;
+  --sidebar-ring: 0 0% 70.9804%;
+  color-scheme: light;
+}
+
 html {
   scroll-padding-top: 100px;
   scroll-behavior: smooth;
