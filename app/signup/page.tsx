@@ -85,11 +85,7 @@ function SignInWithMagicLink({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={loading}
-          className="hover:scale-105 transition-transform duration-200 mt-3"
-        >
+        <Button type="submit" disabled={loading} className="mt-3">
           {loading ? (
             <>
               <LoadingAnimation className="mx-2 w-4 h-4" /> Sending...
@@ -257,7 +253,7 @@ function SignInWithGitHub() {
   const [loading, setLoading] = useState(false);
   return (
     <Button
-      className="w-full flex-1 hover:scale-105 transition-transform duration-200"
+      className="w-full flex-1"
       variant="outline"
       type="button"
       onClick={() => {
@@ -286,7 +282,7 @@ function SignInWithGoogle() {
   const [loading, setLoading] = useState(false);
   return (
     <Button
-      className="w-full flex-1 hover:scale-105 transition-transform duration-200"
+      className="w-full flex-1"
       variant="outline"
       type="button"
       onClick={() => {

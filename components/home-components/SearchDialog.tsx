@@ -91,7 +91,7 @@ function NoteItem({ note, onClick, isSelected }: any) {
     <div
       onClick={onClick}
       className={`flex items-center py-2 px-3 cursor-pointer rounded-lg transition-colors ${
-        isSelected ? "bg-primary/20" : "hover:bg-primary/10"
+        isSelected ? "bg-primary/10" : "hover:bg-primary/10"
       }`}
     >
       <div className="flex w-full items-center">
