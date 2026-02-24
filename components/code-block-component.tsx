@@ -95,7 +95,7 @@ export const CodeBlockComponent = ({
         </DropdownMenu>
 
         <Button
-          variant="outline"
+          variant="ghost"
           className="h-8 px-2 py-2 gap-2"
           contentEditable={false}
           onClick={copyToClipboard}
