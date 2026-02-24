@@ -1,50 +1,105 @@
 import MaxWContainer from "../ui/MaxWContainer";
 import Section from "../ui/Section";
-import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
 import { LiaQuoteLeftSolid } from "react-icons/lia";
-
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { NOISE_PNG } from "@/lib/data";
 export default function MoreAboutMe() {
   return (
     <Section sectionId="about">
       <MaxWContainer>
-        <Card className="relative bg-primary/15 border-border p-5 sm:p-10">
-          <span className="absolute -top-8 sm:-top-10 left-0 -rotate-2 opacity-30 text-primary">
-            <LiaQuoteLeftSolid className="size-14 sm:size-16 lg:size-20" />
-          </span>
-          <span className="absolute -top-8 sm:-top-10 left-1 -rotate-2 opacity-50 text-primary">
-            <LiaQuoteLeftSolid className="size-14 sm:size-16 lg:size-20" />
-          </span>
-          <CardContent className="w-full flex flex-col sm:flex-row justify-between items-center">
-            <div className="p-2 rounded-lg flex-shrink-0 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-muted/30 rounded-lg blur-xl" />
-              <Image
-                src="/picofme.png"
-                alt="Mohammed"
-                width={300}
-                height={300}
-                className="relative rounded-lg"
-              />
+        <div className="relative pt-10">
+          {/* Stacked paper layers behind */}
+          <div className="absolute inset-x-0 bottom-0 top-4 rounded-sm bg-primary" />
+          <div className="absolute inset-x-0 bottom-0 top-2 rounded-sm bg-primary/90" />
+
+          {/* Main paper */}
+          <div
+            className="relative overflow-hidden"
+            style={{
+              background: "#efefef",
+              backgroundImage: `repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 36px,
+                #644a40 37px
+              )`,
+            }}
+          >
+            {/* Real PNG grain noise overlay — always light mode, fixed values */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none select-none absolute  inset-0 "
+              style={{
+                backgroundImage: `url(${NOISE_PNG})`,
+                backgroundRepeat: "repeat",
+                backgroundSize: "128px 128px",
+                opacity: 0.05,
+                mixBlendMode: "multiply",
+                zIndex: 5,
+              }}
+            />
+            {/* Left margin line */}
+            <div className="absolute top-0 bottom-0 left-16 w-px bg-[#f5a0a07d]" />
+
+            <div
+              className="w-full border border-border flex flex-col sm:flex-row items-center gap-6 sm:gap-10 px-6 sm:px-10"
+              style={{ paddingTop: "9px", paddingBottom: "9px" }}
+            >
+              {/* Quote + author */}
+              <div className="flex flex-col justify-between py-6 pl-12 gap-3 w-full sm:w-2/3">
+                <div className="space-y-0">
+                  <p
+                    className="text-lg sm:text-xl leading-relaxed text-foreground"
+                    style={{
+                      fontFamily: "Georgia, serif",
+                      lineHeight: "37px",
+                    }}
+                  >
+                    I've been looking for a note-taking app that's simpler than
+                    Notion but more organized than Google Keep.
+                  </p>
+                  <p
+                    className="text-base sm:text-lg leading-relaxed text-muted-foreground"
+                    style={{
+                      fontFamily: "Georgia, serif",
+                      fontStyle: "italic",
+                      lineHeight: "37px",
+                    }}
+                  >
+                    Something clean, structured, with a rich text editor. That's
+                    what Notevo's trying to be: a minimal, structured,
+                    note-taking app.
+                  </p>
+                </div>
+
+                {/* Author row with shadcn Avatar */}
+                <div className="flex items-center gap-3 bg-muted w-fit">
+                  <Avatar className="h-9 w-9 rounded-lg border border-border">
+                    <AvatarImage
+                      src="/picofme.png"
+                      alt="Mohammed H"
+                      className="object-cover object-top"
+                    />
+                    <AvatarFallback className="rounded-lg bg-muted text-primary text-xs font-bold">
+                      MH
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      Mohammed H
+                    </p>
+                    <p
+                      className="text-xs text-muted-foreground"
+                      style={{ fontStyle: "italic" }}
+                    >
+                      Building Notevo
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="h-full flex justify-between items-center flex-col gap-1 w-full sm:w-2/3">
-              <h1 className=" space-y-4 text-start text-lg sm:text-xl lg:text-2xl pb-3 lg:pb-5 bg-gradient-to-r from-foreground/80 to-foreground/70 bg-clip-text text-transparent sm:text-left">
-                <p>
-                  {`I've been looking for a note-taking app that's simpler than
-                  Notion but more organized than Google Keep.`}
-                </p>
-                <p>
-                  {`Something clean, structured, with a rich text editor. That's
-                  what Notevo's trying to be: a minimal, structured, note-taking
-                  app`}
-                </p>
-              </h1>
-              <span className="w-full flex justify-center items-start flex-col gap-2 text-muted-foreground">
-                <p className="font-semibold text-base">Mohammed H</p>
-                <p className="font-light text-xs">Building Notevo</p>
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </MaxWContainer>
     </Section>
   );
