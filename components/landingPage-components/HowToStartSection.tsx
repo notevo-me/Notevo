@@ -311,7 +311,7 @@ export default function HowToStartSection() {
           SectionSubTitle="Get started with Notevo in just a few simple steps"
         />
 
-        <div ref={containerRef} className="relative max-w-5xl mx-auto">
+        <div ref={containerRef} className="relative max-w-[75rem] mx-auto">
           {/* Step connector dots row */}
           <div className="flex items-center max-w-3xl mx-auto mb-8 px-6 md:px-12">
             {HowToStartSteps.map((_: Step, i: number) => (
