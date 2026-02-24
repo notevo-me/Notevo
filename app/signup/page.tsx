@@ -204,7 +204,7 @@ export default function SignInPage() {
                         A sign-in link has been sent to your email address.
                       </p>
                       <Button
-                        className="w-full"
+                        className="w-full hover:scale-105 transition-transform duration-200"
                         onClick={() => setStep("signIn")}
                       >
                         Cancel
