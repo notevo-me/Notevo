@@ -135,7 +135,7 @@ export default function PublicNotePage() {
                     <span className="sr-only">Toggle theme</span>
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent className="text-xs px-1 py-1" side="bottom">
+                <TooltipContent className="text-xs px-2 py-1" side="bottom">
                   Toggle theme
                 </TooltipContent>
               </Tooltip>

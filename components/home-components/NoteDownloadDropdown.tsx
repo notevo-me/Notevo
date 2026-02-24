@@ -33,11 +33,31 @@ export default function NoteDownloadDropdown({
 }: NoteDownloadDropdownProps) {
   const { handleDownload } = useNoteDownload({ noteBody, noteTitle });
 
-  const formats: { label: string; value: DownloadFormat; icon: React.ReactNode }[] = [
-    { label: "Markdown (.md)", value: "markdown", icon: <FileText size={16} className="text-muted-foreground" /> },
-    { label: "JSON", value: "json", icon: <FileJson size={16} className="text-muted-foreground" /> },
-    { label: "Word (.docx)", value: "docx", icon: <FileType size={16} className="text-muted-foreground" /> },
-    { label: "PDF", value: "pdf", icon: <FileDown size={16} className="text-muted-foreground" /> },
+  const formats: {
+    label: string;
+    value: DownloadFormat;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      label: "Markdown (.md)",
+      value: "markdown",
+      icon: <FileText size={16} className="text-muted-foreground" />,
+    },
+    {
+      label: "JSON",
+      value: "json",
+      icon: <FileJson size={16} className="text-muted-foreground" />,
+    },
+    {
+      label: "Word (.docx)",
+      value: "docx",
+      icon: <FileType size={16} className="text-muted-foreground" />,
+    },
+    {
+      label: "PDF",
+      value: "pdf",
+      icon: <FileDown size={16} className="text-muted-foreground" />,
+    },
   ];
 
   return (
@@ -56,7 +76,7 @@ export default function NoteDownloadDropdown({
               </Button>
             </TooltipTrigger>
           </DropdownMenuTrigger>
-          <TooltipContent className="text-xs px-1 py-1" side="bottom">
+          <TooltipContent className="text-xs px-2 py-1" side="bottom">
             Download note
           </TooltipContent>
         </Tooltip>
