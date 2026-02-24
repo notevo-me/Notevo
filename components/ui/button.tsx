@@ -6,9 +6,11 @@ import { cn } from "../../lib/utils";
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium  transition-colors disabled:pointer-events-none disabled:opacity-50 outline-none ring-0",
   {
+    // transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:rounded-md hover:shadow-[4px_4px_0px_black] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/70",
+        default:
+          "bg-primary text-primary-foreground transition-all duration-300 border-r border-b border-transparent hover:border-muted/50 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-lg hover:shadow-[3px_3px_0px] hover:shadow-primary active:translate-x-[0px] active:translate-y-[0px]",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
