@@ -35,7 +35,7 @@ const itemVariants = (x: number) => ({
 
 export default function FeaturesSection() {
   return (
-    <Section sectionId="features" className="relative overflow-hidden">
+    <Section sectionId="features" className="relative overflow-hidden bg-muted">
       <MaxWContainer className="relative z-10">
         <SectionHeading
           SectionTitle="Features you'll love"
@@ -77,21 +77,23 @@ export default function FeaturesSection() {
                 {/* Text Side */}
                 <motion.div
                   variants={itemVariants(isEven ? 40 : -40)}
-                  className="w-full md:w-1/2"
+                  className="w-full md:w-1/2 "
                 >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="relative bg-primary/10 rounded-lg p-3">
-                      <feature.icon className="w-8 h-8 text-primary" />
+                  <div className=" Desktop:h-96 flex flex-col justify-end items-start">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="relative bg-primary/10 rounded-lg p-3">
+                        <feature.icon className="w-8 h-8 text-primary" />
+                      </div>
                     </div>
+
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
+                      {feature.title}
+                    </h3>
+
+                    <p className="text-lg text-muted-foreground leading-relaxed">
+                      {feature.description}
+                    </p>
                   </div>
-
-                  <h3 className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
-                    {feature.title}
-                  </h3>
-
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </p>
                 </motion.div>
               </motion.div>
             );

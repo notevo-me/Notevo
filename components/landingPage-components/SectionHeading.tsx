@@ -16,7 +16,7 @@ export default function SectionHeading({
       transition={{ duration: 0.8 }}
       className="text-center mb-16"
     >
-      <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+      <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
         <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
           {SectionTitle}
         </span>
