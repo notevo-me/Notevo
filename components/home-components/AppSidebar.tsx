@@ -246,7 +246,7 @@ const SidebarHeaderSection = memo(function SidebarHeaderSection({
                 <Button
                   variant="outline"
                   onClick={handleCreateWorkingSpace}
-                  className="border-dashed h-9 my-2 w-full"
+                  className="border-dashed bg-transparent h-9 my-2 w-full"
                 >
                   <p className="text-xs w-full flex justify-center items-center gap-2">
                     <Plus size={16} /> Create Workspace
@@ -794,7 +794,7 @@ const WorkspacesList = memo(function WorkspacesList({
         <Button
           variant="outline"
           onClick={handleCreateWorkingSpace}
-          className="border-dashed h-9 my-2 w-full"
+          className="border-dashed bg-transparent h-9 my-2 w-full"
         >
           <p className="text-xs w-full flex justify-center items-center gap-2">
             <Plus size={16} className=" text-primary" /> Create Workspace
