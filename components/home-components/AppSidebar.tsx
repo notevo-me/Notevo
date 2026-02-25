@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
+  FolderClosed,
 } from "lucide-react";
 import { TbSelector } from "react-icons/tb";
 import {
@@ -238,7 +239,7 @@ const SidebarHeaderSection = memo(function SidebarHeaderSection({
                     }
                     disabled={loading}
                   >
-                    <Notebook size="16" className="mr-2" />
+                    <FolderClosed size="16" className="mr-2" />
                     <span>{formatWorkspaceName(workingSpace.name)}</span>
                   </DropdownMenuItem>
                 ))
@@ -704,7 +705,7 @@ const WorkspaceItem = memo(
                             className="flex-shrink-0 text-primary"
                           />
                         ) : (
-                          <Notebook
+                          <FolderClosed
                             size="16"
                             className="flex-shrink-0 text-primary"
                           />

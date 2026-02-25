@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import SectionHeading from "./SectionHeading";
 import Section from "@/components/ui/Section";
 import Link from "next/link";
-
+import { FolderClosed } from "lucide-react";
 interface Step {
   id: string;
   StepNum: string;
@@ -138,7 +138,7 @@ function WorkspacePreview() {
         {phase !== "created" ? (
           <>
             <div className="w-11 h-11 rounded-lg bg-muted border border-border flex items-center justify-center text-xl">
-              🗂️
+              <FolderClosed size={24} className=" text-primary" />
             </div>
             <p className="text-sm font-bold text-foreground">
               Workspace not found
@@ -180,63 +180,7 @@ function WorkspacePreview() {
                 </div>
               </div>
               <div className="flex items-center justify-center py-5 border-t border-b border-border">
-                <svg width="32" height="36" viewBox="0 0 32 36" fill="none">
-                  <rect
-                    x="6"
-                    y="1"
-                    width="22"
-                    height="34"
-                    rx="2"
-                    stroke="#644a40"
-                    strokeWidth="1.5"
-                    fill="none"
-                  />
-                  <line
-                    x1="6"
-                    y1="8"
-                    x2="28"
-                    y2="8"
-                    stroke="#644a40"
-                    strokeWidth="1"
-                    opacity="0.3"
-                  />
-                  <rect
-                    x="2"
-                    y="5"
-                    width="4"
-                    height="3"
-                    rx="1"
-                    fill="#644a40"
-                    opacity="0.5"
-                  />
-                  <rect
-                    x="2"
-                    y="11"
-                    width="4"
-                    height="3"
-                    rx="1"
-                    fill="#644a40"
-                    opacity="0.5"
-                  />
-                  <rect
-                    x="2"
-                    y="17"
-                    width="4"
-                    height="3"
-                    rx="1"
-                    fill="#644a40"
-                    opacity="0.5"
-                  />
-                  <rect
-                    x="2"
-                    y="23"
-                    width="4"
-                    height="3"
-                    rx="1"
-                    fill="#644a40"
-                    opacity="0.5"
-                  />
-                </svg>
+                <FolderClosed size={24} className=" text-primary" />
               </div>
               <div className="flex items-center justify-between px-3 py-2 bg-muted/30">
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
