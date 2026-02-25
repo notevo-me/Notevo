@@ -10,6 +10,7 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
+  FolderClosed,
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useMutation } from "convex/react";
@@ -441,7 +442,7 @@ function WorkspaceCard({
 
       <CardContent className="pb-3">
         <div className="h-20 flex items-center justify-center">
-          <Notebook className="h-7 w-7 text-primary" />
+          <FolderClosed className="h-8 w-8 text-primary" />
         </div>
       </CardContent>
 
