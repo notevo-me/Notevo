@@ -40,7 +40,6 @@ function SignUpPreview() {
           if (i >= EMAIL.length) {
             clearInterval(interval);
             setDone(true);
-            // Pause, then erase
             t = setTimeout(() => {
               let j = EMAIL.length;
               const erase = setInterval(() => {
@@ -135,7 +134,7 @@ function WorkspacePreview() {
 
   return (
     <div className="p-5 w-full">
-      <div className="bg-background rounded-lg border border-border p-5 flex flex-col items-center gap-2.5 relative overflow-hidden">
+      <div className="bg-background rounded-lg border border-border p-4 flex flex-col items-center gap-2.5 relative overflow-hidden">
         {phase !== "created" ? (
           <>
             <div className="w-11 h-11 rounded-lg bg-muted border border-border flex items-center justify-center text-xl">
@@ -163,17 +162,102 @@ function WorkspacePreview() {
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center gap-2 py-2"
+            className="w-full"
           >
-            <div className="w-11 h-11 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-xl">
-              ✅
+            {/* Notebook card */}
+            <div className="bg-background rounded-lg border border-border overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2.5">
+                <span className="text-sm font-bold text-foreground">
+                  Untitled
+                </span>
+                <div className="flex gap-0.5 items-center">
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="w-1 h-1 rounded-full bg-muted-foreground/40"
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-center py-5 border-t border-b border-border">
+                <svg width="32" height="36" viewBox="0 0 32 36" fill="none">
+                  <rect
+                    x="6"
+                    y="1"
+                    width="22"
+                    height="34"
+                    rx="2"
+                    stroke="#644a40"
+                    strokeWidth="1.5"
+                    fill="none"
+                  />
+                  <line
+                    x1="6"
+                    y1="8"
+                    x2="28"
+                    y2="8"
+                    stroke="#644a40"
+                    strokeWidth="1"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="2"
+                    y="5"
+                    width="4"
+                    height="3"
+                    rx="1"
+                    fill="#644a40"
+                    opacity="0.5"
+                  />
+                  <rect
+                    x="2"
+                    y="11"
+                    width="4"
+                    height="3"
+                    rx="1"
+                    fill="#644a40"
+                    opacity="0.5"
+                  />
+                  <rect
+                    x="2"
+                    y="17"
+                    width="4"
+                    height="3"
+                    rx="1"
+                    fill="#644a40"
+                    opacity="0.5"
+                  />
+                  <rect
+                    x="2"
+                    y="23"
+                    width="4"
+                    height="3"
+                    rx="1"
+                    fill="#644a40"
+                    opacity="0.5"
+                  />
+                </svg>
+              </div>
+              <div className="flex items-center justify-between px-3 py-2 bg-muted/30">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  2/25/2026
+                </div>
+                <span className="text-[10px] font-medium text-primary">
+                  Open
+                </span>
+              </div>
             </div>
-            <p className="text-sm font-bold text-foreground">
-              Workspace created!
-            </p>
-            <p className="text-[11px] text-muted-foreground">
-              My Workspace is ready.
-            </p>
           </motion.div>
         )}
 
@@ -205,45 +289,50 @@ function WorkspacePreview() {
 }
 
 function WritingPreview() {
-  const TEXT = "hi there";
+  const SLASH_TEXT = "/t";
   const [displayed, setDisplayed] = useState("");
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
     let interval: ReturnType<typeof setInterval>;
 
-    function startTyping() {
+    function startLoop() {
       setDisplayed("");
       setShowMenu(false);
-      let i = 0;
+      setShowPlaceholder(true);
+
+      // Show placeholder, then start typing /t
       t = setTimeout(() => {
-        interval = setInterval(() => {
-          i++;
-          setDisplayed(TEXT.slice(0, i));
-          if (i >= TEXT.length) {
-            clearInterval(interval);
-            // Show menu after short pause (simulating "/" press)
-            t = setTimeout(() => setShowMenu(true), 600);
-            // Erase after showing menu
-            t = setTimeout(() => {
-              setShowMenu(false);
-              let j = TEXT.length;
-              const erase = setInterval(() => {
-                j--;
-                setDisplayed(TEXT.slice(0, j));
-                if (j <= 0) {
-                  clearInterval(erase);
-                  t = setTimeout(startTyping, 500);
-                }
-              }, 40);
-            }, 2800);
-          }
-        }, 100);
-      }, 500);
+        setShowPlaceholder(false);
+        let i = 0;
+        t = setTimeout(() => {
+          interval = setInterval(() => {
+            i++;
+            setDisplayed(SLASH_TEXT.slice(0, i));
+            if (i >= SLASH_TEXT.length) {
+              clearInterval(interval);
+              t = setTimeout(() => setShowMenu(true), 400);
+              t = setTimeout(() => {
+                setShowMenu(false);
+                let j = SLASH_TEXT.length;
+                const erase = setInterval(() => {
+                  j--;
+                  setDisplayed(SLASH_TEXT.slice(0, j));
+                  if (j <= 0) {
+                    clearInterval(erase);
+                    t = setTimeout(startLoop, 400);
+                  }
+                }, 40);
+              }, 2600);
+            }
+          }, 120);
+        }, 300);
+      }, 1400);
     }
 
-    startTyping();
+    startLoop();
     return () => {
       clearTimeout(t);
       clearInterval(interval);
@@ -253,28 +342,51 @@ function WritingPreview() {
   return (
     <div className="p-5 w-full">
       <div className="bg-background rounded-lg border border-border overflow-hidden">
-        <div className="px-4 py-3 border-b border-muted flex items-center gap-2 text-base font-bold text-foreground">
-          <span className="text-primary text-xs">⠿</span>
-          <span>{displayed}</span>
-          <span className="inline-block w-0.5 h-4 bg-foreground/50 rounded-sm cursor-blink align-middle" />
+        {/* Editor line */}
+        <div className="px-4 py-3 border-b border-muted flex items-center gap-2 min-h-[48px]">
+          {showPlaceholder ? (
+            <span className="text-[13px] text-muted-foreground/60 italic">
+              Press '/' for commands, or start writing...
+            </span>
+          ) : (
+            <>
+              <span className="text-primary text-xs">⠿</span>
+              <span className="text-base font-bold text-foreground">
+                {displayed}
+              </span>
+              <span className="inline-block w-0.5 h-4 bg-foreground/50 rounded-sm cursor-blink align-middle" />
+            </>
+          )}
         </div>
+
+        {/* Slash command menu */}
         <motion.div
           initial={false}
           animate={showMenu ? { opacity: 1, y: 0 } : { opacity: 0, y: -4 }}
           transition={{ duration: 0.15 }}
         >
           {[
-            { icon: "¶", label: "Text", desc: "Plain text.", active: true },
+            { icon: "≡", label: "Text", desc: "Plain text.", active: true },
             {
               icon: "☑",
               label: "To-do List",
               desc: "Track tasks with a to-do list.",
             },
-            { icon: "H₁", label: "Heading 1", desc: "Big section heading." },
+            {
+              icon: "•≡",
+              label: "Bullet List",
+              desc: "Create a simple bullet list.",
+            },
+            {
+              icon: "1≡",
+              label: "Numbered List",
+              desc: "Create a list with numbering.",
+            },
+            { icon: "❝", label: "Quote", desc: "Capture a quote." },
           ].map((item, i) => (
             <div
               key={i}
-              className={`flex items-center gap-2.5 px-3.5 py-2 ${item.active ? "bg-accent" : ""} ${i < 2 ? "border-b border-muted" : ""}`}
+              className={`flex items-center gap-2.5 px-3.5 py-1.5 ${item.active ? "bg-accent" : ""} ${i < 4 ? "border-b border-muted" : ""}`}
             >
               <span
                 className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold flex-shrink-0 border ${item.active ? "bg-primary text-primary-foreground border-primary" : "bg-muted text-muted-foreground border-border"}`}
@@ -311,7 +423,7 @@ export default function HowToStartSection() {
           SectionSubTitle="Get started with Notevo in just a few simple steps"
         />
 
-        <div ref={containerRef} className="relative max-w-[75rem] mx-auto">
+        <div ref={containerRef} className="relative max-w-7xl mx-auto">
           {/* Step connector dots row */}
           <div className="flex items-center max-w-3xl mx-auto mb-8 px-6 md:px-12">
             {HowToStartSteps.map((_: Step, i: number) => (
@@ -343,13 +455,13 @@ export default function HowToStartSection() {
                   className="group relative bg-card rounded-lg border border-border overflow-hidden hover:border-primary/50 flex flex-col"
                 >
                   {/* Preview area */}
-                  <div className="bg-muted border-b border-border h-56 overflow-hidden flex items-center justify-center">
+                  <div className="bg-muted border-b border-border h-72 overflow-hidden flex items-center justify-center">
                     <Preview />
                   </div>
 
                   {/* Card content */}
                   <div className="p-5 flex flex-col flex-1">
-                    <span className="absolute top-3 left-3 inline-flex items-center bg-secondary text-secondary-foreground rounded-md px-2.5 py-0.5 text-[11px] font-bold mb-3">
+                    <span className="absolute top-2 left-2 inline-flex items-center bg-secondary text-secondary-foreground rounded-md px-2.5 py-0.5 text-[11px] font-bold mb-3">
                       {step.StepNum}
                     </span>
 
