@@ -364,7 +364,7 @@ export default function HowToStartSection() {
       <div className="container relative z-10 mx-auto px-4">
         <SectionHeading
           SectionTitle="How To Start"
-          SectionSubTitle="Get started with Notevo in just a few simple steps"
+          SectionSubTitle="in just a few simple steps"
         />
 
         <div ref={containerRef} className="relative max-w-7xl mx-auto">

@@ -108,7 +108,7 @@ export default function SignInPage() {
       {/* Real PNG grain noise overlay — always light mode, fixed values */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none absolute inset-0 mask-image-gradient"
+        className="pointer-events-none select-none absolute inset-0"
         style={{
           backgroundImage: `url(${NOISE_PNG})`,
           backgroundRepeat: "repeat",
