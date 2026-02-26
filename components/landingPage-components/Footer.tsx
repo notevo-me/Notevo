@@ -83,7 +83,6 @@ export default function Footer() {
                     prefetch={true}
                     href="/terms-of-service"
                     className="hover:underline"
-                    target="_blank"
                   >
                     Terms of Service
                   </Link>
@@ -93,7 +92,6 @@ export default function Footer() {
                     prefetch={true}
                     href="/privacy-policy"
                     className="hover:underline"
-                    target="_blank"
                   >
                     Privacy Policy
                   </Link>

@@ -8,6 +8,7 @@ import Section from "../ui/Section";
 import NotevoLightNotePic from "@/public/NotevoLightNotePic.svg";
 import NotevoLightWorkingspacePagePic from "@/public/NotevoLightWorkingspacePagePic.svg";
 import { StaticImageData } from "next/image";
+import { NOISE_PNG } from "@/lib/data";
 
 const featureImages: Record<string, StaticImageData> = {
   "Rich Text Editor": NotevoLightNotePic,
@@ -36,6 +37,19 @@ const itemVariants = (x: number) => ({
 export default function FeaturesSection() {
   return (
     <Section sectionId="features" className="relative overflow-hidden bg-muted">
+      {/* Real PNG grain noise overlay — always light mode, fixed values */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute inset-0 "
+        style={{
+          backgroundImage: `url(${NOISE_PNG})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+          opacity: 0.07,
+          mixBlendMode: "multiply",
+          zIndex: 5,
+        }}
+      />
       <MaxWContainer className="relative z-10">
         <SectionHeading
           SectionTitle="Features you'll love"

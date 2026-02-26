@@ -28,7 +28,7 @@ export default function NotFound() {
                   <p className="text-muted-foreground text-sm sm:text-lg lg:text-xl font-medium lg:font-medium px-2">
                     Could not find requested resource
                   </p>
-                  <Button className="w-full sm:w-auto mt-4 hover:scale-105 transition-transform duration-200">
+                  <Button className="w-full sm:w-auto mt-4 ">
                     <Link href="/">Return Home</Link>
                   </Button>
                 </div>
@@ -43,7 +43,6 @@ export default function NotFound() {
             priority
             width={20}
             height={20}
-            className="hover:scale-110 transition-transform duration-200"
           />
           <p className="text-muted-foreground text-xs font-medium px-2">
             {` ! Hi this is Notevo team we're really sorry for this `}

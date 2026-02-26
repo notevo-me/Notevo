@@ -36,13 +36,13 @@ export const HowToStartSteps = [
     id: "2",
     StepNum: "2",
     Title: "Create Workspace",
-    Body: "Setting up your workspace is easier than you might think.",
+    Body: "Setting up your workspace is easier than you might think. and from there you can create table and organize your stuff",
   },
   {
     id: "3",
     StepNum: "3",
     Title: "Start Writing",
-    Body: "Write and experience the power of Simple, Structured Note-Taking.",
+    Body: "Press '/' for commands, or start writing and experience the power of Simple, Structured Note-Taking.",
   },
 ] as const;
 

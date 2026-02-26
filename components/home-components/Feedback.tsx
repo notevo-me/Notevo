@@ -75,10 +75,10 @@ export default function Feedback() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="relative p-1.5 flex cursor-pointer select-none items-center gap-2 rounded-lg text-sm outline-none transition-colors hover:bg-primary/10 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 w-full">
+        <Button variant="SidebarMenuButton" className="relative p-1.5 flex ">
           <MessageCircleHeart size="16" className="mr-2 h-4 w-4 text-primary" />
           Feedback
-        </button>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Send Feedback</DialogTitle>
