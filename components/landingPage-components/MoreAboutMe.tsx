@@ -74,16 +74,6 @@ export default function MoreAboutMe() {
 
                 {/* Author row with shadcn Avatar */}
                 <div className="flex items-center gap-3 bg-muted w-fit">
-                  <Avatar className="h-9 w-9 rounded-lg border border-border">
-                    <AvatarImage
-                      src="/picofme.png"
-                      alt="Mohammed H"
-                      className="object-cover object-top"
-                    />
-                    <AvatarFallback className="rounded-lg bg-muted text-primary text-xs font-bold">
-                      MH
-                    </AvatarFallback>
-                  </Avatar>
                   <div>
                     <p className="text-sm font-semibold text-foreground">
                       Mohammed H
