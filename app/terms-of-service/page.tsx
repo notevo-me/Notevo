@@ -321,7 +321,7 @@ export default function TermsPage() {
               <Calendar className="w-3 h-3 text-secondary" />
             </div>
             <div className="leading-tight">
-              <span className="block text-[0.62rem] text-white opacity-80 uppercase tracking-widest">
+              <span className="block text-[0.62rem] text-muted/80 uppercase tracking-widest">
                 Last Modified
               </span>
               <span className="text-[0.78rem] font-medium text-secondary">
