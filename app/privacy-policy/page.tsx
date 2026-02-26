@@ -1,78 +1,182 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import MaxWContainer from "@/components/ui/MaxWContainer";
-import { generateMetadata as generateSEOMetadata } from "@/lib/seo";
-import type { Metadata } from "next";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  Home,
+  Calendar,
+  Shield,
+  Database,
+  Link as LinkIcon,
+  Globe,
+  Cookie,
+  Lock,
+  RefreshCw,
+} from "lucide-react";
+import { NOISE_PNG } from "@/lib/data";
+const sections = [
+  { id: "consent", label: "Consent", icon: Shield, number: "01" },
+  {
+    id: "collection",
+    label: "Information We Collect",
+    icon: Database,
+    number: "02",
+  },
+  { id: "yourdata", label: "Your Data", icon: Lock, number: "03" },
+  { id: "links", label: "Links to Other Sites", icon: LinkIcon, number: "04" },
+  {
+    id: "thirdparty",
+    label: "Third-Party Policies",
+    icon: Globe,
+    number: "05",
+  },
+  { id: "cookies", label: "Cookies", icon: Cookie, number: "06" },
+  { id: "gdpr", label: "GDPR Rights", icon: Shield, number: "07" },
+  { id: "changes", label: "Policy Changes", icon: RefreshCw, number: "08" },
+];
 
-export const metadata: Metadata = generateSEOMetadata({
-  title: "Privacy Policy",
-  description:
-    "Read Notevo's Privacy Policy to understand how we collect, use, and protect your personal information. Learn about our data practices and your privacy rights.",
-  path: "/privacy-policy",
-  keywords: ["privacy policy", "data protection", "GDPR", "user privacy"],
-});
-
-export default function page() {
+function SubSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="bg-background text-foreground flex flex-col min-h-screen">
+    <div className="mb-5">
+      <h3 className="text-sm font-medium text-foreground mb-1.5 tracking-wide">
+        {title}
+      </h3>
+      <p className="text-sm leading-relaxed text-foreground/70">{children}</p>
+    </div>
+  );
+}
+
+function SectionBlock({
+  id,
+  number,
+  title,
+  children,
+}: {
+  id: string;
+  number: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      className="mb-11 scroll-mt-6 opacity-0 translate-y-3 animate-[fadeUp_0.5s_ease_forwards]"
+    >
+      <div className="flex items-baseline gap-3 mb-5 pb-2.5 border-b border-border">
+        <h2 className="text-xl font-semibold text-primary tracking-tight">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+export default function PrivacyPage() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div className=" relative force-light fadeUp bg-background text-foreground flex flex-col min-h-screen">
+      {/* Real PNG grain noise overlay — always light mode, fixed values */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute inset-0 "
+        style={{
+          backgroundImage: `url(${NOISE_PNG})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+          opacity: 0.07,
+          mixBlendMode: "multiply",
+          zIndex: 5,
+        }}
+      />
       <div className="flex-grow">
-        <MaxWContainer>
-          <section className="py-20 px-5">
-            <h1 className="text-4xl font-bold py-5">Notevo Privacy Policy</h1>
-            <p className="text-lg leading-relaxed">
+        <MaxWContainer className="max-w-[760px] mx-auto px-6 pb-44">
+          {/* Hero */}
+          <div className="pt-16 pb-10 opacity-0 translate-y-3 animate-[fadeUp_0.4s_0.05s_ease_forwards]">
+            <div className="text-[0.68rem] tracking-widest uppercase mb-0.5 opacity-60">
+              <p className="leading-tight text-[0.78rem] font-medium text-primary">
+                December 2, 2025
+              </p>
+            </div>
+            <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight mb-3">
+              Notevo Privacy Policy
+            </h1>
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
               Notevo (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;)
-              provides this Privacy Policy to inform you of our policies and
-              procedures regarding the collection, use, and disclosure of
-              personal information we may receive from users of our website
-              (&quot;Site&quot;), accessible from https://notevo.me/ , and any
-              other services offered by us in connection with our Site (any and
-              all of the foregoing, the &quot;Services&quot;).
+              provides this Privacy Policy to inform you of our policies
+              regarding the collection, use, and disclosure of personal
+              information. Questions? Contact us at{" "}
+              <a
+                href="mailto:support@notevo.me"
+                className="text-primary underline underline-offset-2"
+              >
+                support@notevo.me
+              </a>
+              .
             </p>
-            <p>
-              If you have additional questions or require more information about
-              our Privacy Policy, do not hesitate to contact us at
-              support@notevo.me. This Privacy Policy applies only to our online
+          </div>
+
+          {/* Sections */}
+          <SectionBlock id="consent" number="01" title="Consent">
+            <SubSection title="Your Agreement">
+              By using our website, you hereby consent to our Privacy Policy and
+              agree to its terms. This Privacy Policy applies only to our online
               activities and is valid for visitors to our website with regards
               to the information that they share and/or collect in Notevo. This
               policy is not applicable to any information collected offline or
               via channels other than this website.
-            </p>
-            <h2 className="text-2xl font-semibold mt-8">Consent</h2>
-            <p>
-              By using our website, you hereby consent to our Privacy Policy and
-              agree to its terms.
-            </p>
-            <h2 className="text-2xl font-semibold mt-8">
-              Information We Collect
-            </h2>
-            <ul>
-              <li>
-                <strong>Personal Information:</strong> When you sign up, we
-                collect your name, email, and profile picture from your Google
-                account. We use this information for personalization and
-                essential communication with you. We never sell your data.
-              </li>
-              <li>
-                <strong>Voluntary Correspondence:</strong> We retain questions
-                or assistance requests, including your email, for future
-                reference.
-              </li>
-              <li>
-                <strong>Marketing Communications:</strong> Your email may be
-                used for direct marketing and support. You can unsubscribe
-                anytime, and we will promptly delete your information upon
-                request.
-              </li>
-            </ul>
-            <h2 className="text-2xl font-semibold mt-8">Your Data</h2>
-            <p>
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock
+            id="collection"
+            number="02"
+            title="Information We Collect"
+          >
+            <SubSection title="Personal Information">
+              When you sign up, we collect your name, email, and profile picture
+              from your Google account. We use this information for
+              personalization and essential communication with you. We never
+              sell your data.
+            </SubSection>
+            <SubSection title="Voluntary Correspondence">
+              We retain questions or assistance requests, including your email
+              address, for future reference and support.
+            </SubSection>
+            <SubSection title="Marketing Communications">
+              Your email may be used for direct marketing and support. You can
+              unsubscribe at any time, and we will promptly delete your
+              information upon request.
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock id="yourdata" number="03" title="Your Data">
+            <SubSection title="Retention & Deletion">
               Deleted data may remain in our database while your account is
               active. When you delete your account, all of your data is removed
               from our database. Retrieving data from backups is impractical.
-            </p>
-            <h2 className="text-2xl font-semibold mt-8">
-              Links to Other Sites
-            </h2>
-            <p>
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock id="links" number="04" title="Links to Other Sites">
+            <SubSection title="Third-Party Links">
               Our services may contain links to other websites, applications,
               and online services. If you choose to visit a third-party service
               or click on a third-party link, you will be directed to that third
@@ -82,114 +186,136 @@ export default function page() {
               third party, nor is it an endorsement of their privacy or
               information security policies or practices. We do not exercise
               control over third-party websites or services.
-            </p>
-            <h2 className="text-2xl font-semibold mt-8">
-              Third-Party Privacy Policies
-            </h2>
-            <p>
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock
+            id="thirdparty"
+            number="05"
+            title="Third-Party Privacy Policies"
+          >
+            <SubSection title="External Policies">
               Our Privacy Policy does not apply to other websites. Thus, we
               advise you to consult the respective Privacy Policies of these
               third-party services for more detailed information. This may
               include their practices and instructions on how to opt-out of
               certain options.
-            </p>
-            <p>
-              {`
-                    You can choose to disable cookies through your individual browser
-                    settings. More detailed information about cookie management with
-                    specific web browsers can be found on the browsers' respective
-                    websites.
-                    `}
-            </p>
-            <h2 className="text-2xl font-semibold mt-8">Cookies</h2>
-            <p>
+            </SubSection>
+            <SubSection title="Cookie Settings">
+              You can choose to disable cookies through your individual browser
+              settings. More detailed information about cookie management with
+              specific web browsers can be found on the browsers&apos;
+              respective websites.
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock id="cookies" number="06" title="Cookies">
+            <SubSection title="What Are Cookies?">
               Cookies are small pieces of data stored on your device by your
               browser. They serve various purposes, such as remembering your
               preferences, enhancing user experience, and facilitating
               authentication.
-            </p>
-            <p>
-              At our Site, we utilize third-party authentication services,
-              including Google OAuth, to secure and streamline the login
-              process. When you log in using Google OAuth, a cookie is generated
-              and stored on your device. This cookie is essential for the proper
-              functioning of our authentication system.
-            </p>
-            <p>
-              The Google OAuth cookie contains a unique identifier that helps us
-              recognize your authenticated session. It enables you to access our
-              application seamlessly without needing to re-enter your
+            </SubSection>
+            <SubSection title="Google OAuth Cookies">
+              At our Site, we utilize Google OAuth to secure and streamline the
+              login process. When you log in using Google OAuth, a cookie is
+              generated and stored on your device. This cookie is essential for
+              the proper functioning of our authentication system and contains a
+              unique identifier that helps us recognize your authenticated
+              session, enabling seamless access without re-entering your
               credentials repeatedly during a single session.
-            </p>
-            <p>
+            </SubSection>
+            <SubSection title="How They Work">
               These cookies do not store personal information directly on our
               servers. Instead, they serve as tokens that establish a secure
               connection between your browser and the authentication provider,
-              in this case, Google. This enhances the security of the
-              authentication process while providing a more user-friendly
-              experience.
-            </p>
-            <p>
-              By using our Site and opting for third-party authentication, you
-              consent to the use of cookies for authentication purposes. You can
-              manage your cookie preferences through your browser settings.
-            </p>
-            <h2 className="text-2xl font-semibold mt-8">
-              GDPR Data Protection Rights
-            </h2>
-            <p>
-              We want to ensure that you are fully aware of all of your data
-              protection rights. Every user is entitled to the following:
-            </p>
-            <ul>
-              <li>
-                <strong>The right to access:</strong> You have the right to
-                request copies of your personal data. We may charge you a small
-                fee for this service.
-              </li>
-              <li>
-                <strong>The right to rectification:</strong> You have the right
-                to request that we correct any information you believe is
-                inaccurate. You also have the right to request that we complete
-                any information you believe is incomplete.
-              </li>
-              <li>
-                <strong>The right to erasure:</strong> You have the right to
-                request that we erase your personal data, under certain
-                conditions.
-              </li>
-              <li>
-                <strong>The right to restrict processing:</strong> You have the
-                right to request that we restrict the processing of your
-                personal data, under certain conditions.
-              </li>
-              <li>
-                <strong>The right to object to processing:</strong> You have the
-                right to object to our processing of your personal data, under
-                certain conditions.
-              </li>
-              <li>
-                <strong>The right to data portability:</strong> You have the
-                right to request that we transfer the data we have collected to
-                another organization, or directly to you, under certain
-                conditions.
-              </li>
-            </ul>
-            <h2 className="text-2xl font-semibold mt-8">
-              Changes to This Privacy Policy
-            </h2>
-            <p>
+              in this case, Google. By using our Site and opting for third-party
+              authentication, you consent to the use of cookies for
+              authentication purposes. You can manage your cookie preferences
+              through your browser settings.
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock
+            id="gdpr"
+            number="07"
+            title="GDPR Data Protection Rights"
+          >
+            <SubSection title="Right to Access">
+              You have the right to request copies of your personal data. We may
+              charge you a small fee for this service.
+            </SubSection>
+            <SubSection title="Right to Rectification">
+              You have the right to request that we correct any information you
+              believe is inaccurate. You also have the right to request that we
+              complete any information you believe is incomplete.
+            </SubSection>
+            <SubSection title="Right to Erasure">
+              You have the right to request that we erase your personal data,
+              under certain conditions.
+            </SubSection>
+            <SubSection title="Right to Restrict Processing">
+              You have the right to request that we restrict the processing of
+              your personal data, under certain conditions.
+            </SubSection>
+            <SubSection title="Right to Object to Processing">
+              You have the right to object to our processing of your personal
+              data, under certain conditions.
+            </SubSection>
+            <SubSection title="Right to Data Portability">
+              You have the right to request that we transfer the data we have
+              collected to another organization, or directly to you, under
+              certain conditions.
+            </SubSection>
+          </SectionBlock>
+
+          <SectionBlock
+            id="changes"
+            number="08"
+            title="Changes to This Privacy Policy"
+          >
+            <SubSection title="Revisions">
               This Privacy Policy may be revised periodically, and this will be
-              reflected by a &quot;Last modified&quot; date below. We advise you
+              reflected by a &quot;Last Modified&quot; date below. We advise you
               to review this page periodically for any changes. We will notify
               you of any changes by posting the new Privacy Policy on this page.
               These changes are effective immediately upon posting.
-            </p>
-            <p className="py-10">
-              <strong>Last Modified:</strong> 12/02/2025
-            </p>
-          </section>
+            </SubSection>
+          </SectionBlock>
         </MaxWContainer>
+      </div>
+
+      {/* Sticky footer pill */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 pointer-events-none">
+        <div
+          className={cn(
+            "pointer-events-auto flex items-center gap-3.5 rounded-lg  px-5 pr-2.5 py-2",
+            "bg-gradient-to-r from-50% from-[rgba(26,22,20,0.95)] to-80% to-transparent ",
+            "transition-all duration-500",
+            scrolled ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0",
+          )}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[rgba(255,223,181,0.1)] grid place-items-center flex-shrink-0">
+              <Calendar className="w-3 h-3 text-secondary" />
+            </div>
+            <div className="leading-tight">
+              <span className="block text-[0.62rem] text-white opacity-80 uppercase tracking-widest">
+                Last Modified
+              </span>
+              <span className="text-[0.78rem] font-medium text-secondary">
+                December 2, 2025
+              </span>
+            </div>
+            <div className="w-px h-5 bg-muted/50 mx-1" />
+          </div>
+          <Button asChild size="sm" className="gap-1.5">
+            <Link href="/">
+              <Home className="w-3 h-3" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

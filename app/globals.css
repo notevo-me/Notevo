@@ -284,6 +284,13 @@ html {
   animation: blink 1s step-end infinite;
 }
 
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer base {
   body {
     @apply bg-background text-foreground;

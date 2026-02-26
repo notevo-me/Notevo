@@ -45,7 +45,7 @@ export default function Error({
                   <p className="text-muted-foreground text-sm sm:text-md lg:text-md font-medium lg:font-medium px-2">
                     {errorMessage}
                   </p>
-                  <Button className="w-full sm:w-auto mt-4 h-9 hover:scale-105 transition-transform duration-200">
+                  <Button className="w-full sm:w-auto mt-4 h-9">
                     <Link href="/">Try again</Link>
                   </Button>
                 </div>
@@ -60,7 +60,6 @@ export default function Error({
             priority
             width={20}
             height={20}
-            className="hover:scale-110 transition-transform duration-200"
           />
           <p className="text-muted-foreground text-xs font-medium px-2">
             {` ! Hi this is Notevo team we're sorry | Hit The Try Again Button `}
