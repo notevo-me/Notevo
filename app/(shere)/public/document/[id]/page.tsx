@@ -106,7 +106,7 @@ export default function PublicNotePage() {
         className="sticky top-0 z-40 pointer-events-none h-0 overflow-visible"
       >
         <div
-          className="sticky top-0 z-40 pointer-events-none h-48 bg-gradient-to-b from-background from-20% to-transparent transition-opacity duration-150"
+          className="sticky top-0 z-40 pointer-events-none h-24 bg-gradient-to-b from-background from-20% to-transparent transition-opacity duration-150"
           style={{ opacity: isScrolled ? 1 : 0 }}
         />
       </div>
@@ -122,7 +122,7 @@ export default function PublicNotePage() {
               noteBody={JSON.stringify(content)}
               noteTitle={getNote.title ?? "note"}
             />
-            <TooltipProvider delayDuration={0} disableHoverableContent>
+            <TooltipProvider delayDuration={200} disableHoverableContent>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -135,9 +135,7 @@ export default function PublicNotePage() {
                     <span className="sr-only">Toggle theme</span>
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent className="text-xs px-2 py-1" side="bottom">
-                  Toggle theme
-                </TooltipContent>
+                <TooltipContent side="bottom">Toggle theme</TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <Button variant="secondary" className="text-sm px-1.5 py-1.5 h-8">

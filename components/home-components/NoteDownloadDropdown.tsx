@@ -62,7 +62,7 @@ export default function NoteDownloadDropdown({
 
   return (
     <DropdownMenu>
-      <TooltipProvider delayDuration={0} disableHoverableContent>
+      <TooltipProvider delayDuration={200} disableHoverableContent>
         <Tooltip>
           <DropdownMenuTrigger asChild>
             <TooltipTrigger asChild>
@@ -76,9 +76,7 @@ export default function NoteDownloadDropdown({
               </Button>
             </TooltipTrigger>
           </DropdownMenuTrigger>
-          <TooltipContent className="text-xs px-2 py-1" side="bottom">
-            Download note
-          </TooltipContent>
+          <TooltipContent side="bottom">Download note</TooltipContent>
         </Tooltip>
       </TooltipProvider>
 

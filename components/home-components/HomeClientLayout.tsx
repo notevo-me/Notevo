@@ -65,13 +65,6 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
           open && !isMobile ? `rounded-tl-lg border-t border-l mt-3` : ""
         } rounded-none bg-background `}
       >
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showTopFade ? 1 : 0 }}
-          transition={showTopFade ? fadeTransition.show : fadeTransition.hide}
-          className="absolute rounded-tl-lg left-0 top-0 w-full h-52 bg-gradient-to-b from-background from-30% to-transparent to-100% z-[5] pointer-events-none"
-          aria-hidden
-        />
         <div className="z-[10] relative w-full flex items-center justify-start px-5 gap-3 mx-auto rounded-tl-lg border-none py-2.5 ">
           <div className="flex justify-between items-center w-full">
             <div className="flex justify-start items-center gap-3">
@@ -97,8 +90,15 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
         </div>
         <div
           ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent"
+          className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-transparent"
         >
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showTopFade ? 1 : 0 }}
+            transition={showTopFade ? fadeTransition.show : fadeTransition.hide}
+            className="sticky -top-6 left-0 w-full h-28 bg-gradient-to-b from-background from-25% to-transparent to-100% z-[5] pointer-events-none -mb-32"
+            aria-hidden
+          />
           {children}
         </div>
         <MobileWarning />
