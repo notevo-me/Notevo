@@ -53,7 +53,8 @@ export default function FeaturesSection() {
       <MaxWContainer className="relative z-10">
         <SectionHeading
           SectionTitle="Features you'll love"
-          SectionSubTitle="Everything you need to take your note-taking to the next level"
+          SectionSubTitle="Everything you need to take your notes without the hassle.
+"
         />
 
         <div className="space-y-24">
