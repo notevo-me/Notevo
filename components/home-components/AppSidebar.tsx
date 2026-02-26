@@ -768,7 +768,7 @@ const WorkspacesList = memo(function WorkspacesList({
       <SidebarGroupLabel className="text-muted-foreground flex items-center justify-between">
         <span>Workspaces</span>
       </SidebarGroupLabel>
-      <TooltipProvider delayDuration={0} disableHoverableContent>
+      <TooltipProvider delayDuration={200} disableHoverableContent>
         <Tooltip>
           <TooltipTrigger asChild>
             <SidebarGroupAction onClick={handleCreateWorkingSpace}>
@@ -776,7 +776,7 @@ const WorkspacesList = memo(function WorkspacesList({
               <span className="sr-only">Add Workspace</span>
             </SidebarGroupAction>
           </TooltipTrigger>
-          <TooltipContent side="right" sideOffset={5} className=" text-xs p-1">
+          <TooltipContent side="right" sideOffset={5}>
             Add Workspace
           </TooltipContent>
         </Tooltip>

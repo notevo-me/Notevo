@@ -169,6 +169,7 @@ export default function PublicNote({
                     <Tooltip
                       open={isCopyTooltipOpen}
                       onOpenChange={setIsCopyTooltipOpen}
+                      delayDuration={200}
                     >
                       <TooltipTrigger asChild>
                         <Button
@@ -186,12 +187,7 @@ export default function PublicNote({
                           )}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent
-                        className="text-xs px-2 py-1"
-                        side="bottom"
-                      >
-                        Copy link
-                      </TooltipContent>
+                      <TooltipContent side="bottom">Copy link</TooltipContent>
                     </Tooltip>
                   </span>
                 </span>

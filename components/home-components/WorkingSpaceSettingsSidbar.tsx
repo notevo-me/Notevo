@@ -118,7 +118,7 @@ export default function WorkingSpaceSettingsSidbar({
                 <X size={16} className=" text-primary" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-medium" sideOffset={5}>
+            <TooltipContent side="right" sideOffset={5}>
               Delete workspace
             </TooltipContent>
           </Tooltip>

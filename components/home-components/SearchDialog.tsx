@@ -279,132 +279,128 @@ export default function SearchDialog({
         </div>
 
         {/* Results */}
-        <div className="relative min-h-[60vh] max-h-[60vh]">
+        <div
+          ref={resultsScrollRef}
+          onScroll={handleResultsScroll}
+          className="min-h-[60vh] max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent p-2"
+        >
           {canScroll && scrollTop > 8 && (
             <div
-              className="pointer-events-none absolute left-0 right-3 -top-1 z-10 h-20 bg-gradient-to-b from-background/90 from-20% to-transparent"
+              className="pointer-events-none absolute top-[53px] left-0 right-0 z-10 h-20 bg-gradient-to-b from-background/90 from-20% to-transparent"
               aria-hidden
             />
           )}
           {hasMoreBelow && (
             <div
-              className="pointer-events-none absolute left-0 right-3 -bottom-1 z-10 h-20 bg-gradient-to-t from-background/90 from-20% to-transparent"
+              className="pointer-events-none absolute bottom-[53px] left-0 right-0 z-10 h-20 bg-gradient-to-t from-background/90 from-20% to-transparent"
               aria-hidden
             />
           )}
-          <div
-            ref={resultsScrollRef}
-            onScroll={handleResultsScroll}
-            className="min-h-[60vh] max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent p-2"
-          >
-            {isLoading ? (
-              <SearchLoadingSkeleton />
-            ) : !hasResults ? (
-              <div className="py-12 text-center text-sm text-muted-foreground">
-                {!query ? (
-                  <>
-                    <FileText className="mx-auto h-12 w-12 opacity-50 mb-3 text-primary" />
-                    <p className="font-medium">No notes found</p>
-                    <p className="text-xs mt-1">
-                      Create your first note to get started
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <Search className="mx-auto h-12 w-12 opacity-50 text-primary mb-3" />
-                    <p className="font-medium">
-                      No results found for "{query}"
-                    </p>
-                    <p className="text-xs mt-1">
-                      Try different keywords or check your spelling
-                    </p>
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {groupedNotes.today.length > 0 && (
-                  <div className="mb-4">
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
-                      Today
-                    </div>
-                    {groupedNotes.today.map((note) => (
-                      <NoteItem
-                        key={note._id}
-                        note={note}
-                        onClick={() => handleItemClick(note)}
-                        isSelected={allNotes.indexOf(note) === selectedIndex}
-                      />
-                    ))}
+          {isLoading ? (
+            <SearchLoadingSkeleton />
+          ) : !hasResults ? (
+            <div className="py-12 text-center text-sm text-muted-foreground">
+              {!query ? (
+                <>
+                  <FileText className="mx-auto h-12 w-12 opacity-50 mb-3 text-primary" />
+                  <p className="font-medium">No notes found</p>
+                  <p className="text-xs mt-1">
+                    Create your first note to get started
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Search className="mx-auto h-12 w-12 opacity-50 text-primary mb-3" />
+                  <p className="font-medium">No results found for "{query}"</p>
+                  <p className="text-xs mt-1">
+                    Try different keywords or check your spelling
+                  </p>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {groupedNotes.today.length > 0 && (
+                <div className="mb-4">
+                  <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
+                    Today
                   </div>
-                )}
+                  {groupedNotes.today.map((note) => (
+                    <NoteItem
+                      key={note._id}
+                      note={note}
+                      onClick={() => handleItemClick(note)}
+                      isSelected={allNotes.indexOf(note) === selectedIndex}
+                    />
+                  ))}
+                </div>
+              )}
 
-                {groupedNotes.yesterday.length > 0 && (
-                  <div className="mb-4">
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
-                      Yesterday
-                    </div>
-                    {groupedNotes.yesterday.map((note) => (
-                      <NoteItem
-                        key={note._id}
-                        note={note}
-                        onClick={() => handleItemClick(note)}
-                        isSelected={allNotes.indexOf(note) === selectedIndex}
-                      />
-                    ))}
+              {groupedNotes.yesterday.length > 0 && (
+                <div className="mb-4">
+                  <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
+                    Yesterday
                   </div>
-                )}
+                  {groupedNotes.yesterday.map((note) => (
+                    <NoteItem
+                      key={note._id}
+                      note={note}
+                      onClick={() => handleItemClick(note)}
+                      isSelected={allNotes.indexOf(note) === selectedIndex}
+                    />
+                  ))}
+                </div>
+              )}
 
-                {groupedNotes.pastWeek.length > 0 && (
-                  <div className="mb-4">
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
-                      Past Week
-                    </div>
-                    {groupedNotes.pastWeek.map((note) => (
-                      <NoteItem
-                        key={note._id}
-                        note={note}
-                        onClick={() => handleItemClick(note)}
-                        isSelected={allNotes.indexOf(note) === selectedIndex}
-                      />
-                    ))}
+              {groupedNotes.pastWeek.length > 0 && (
+                <div className="mb-4">
+                  <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
+                    Past Week
                   </div>
-                )}
+                  {groupedNotes.pastWeek.map((note) => (
+                    <NoteItem
+                      key={note._id}
+                      note={note}
+                      onClick={() => handleItemClick(note)}
+                      isSelected={allNotes.indexOf(note) === selectedIndex}
+                    />
+                  ))}
+                </div>
+              )}
 
-                {groupedNotes.pastMonth.length > 0 && (
-                  <div className="mb-4">
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
-                      Past 30 Days
-                    </div>
-                    {groupedNotes.pastMonth.map((note) => (
-                      <NoteItem
-                        key={note._id}
-                        note={note}
-                        onClick={() => handleItemClick(note)}
-                        isSelected={allNotes.indexOf(note) === selectedIndex}
-                      />
-                    ))}
+              {groupedNotes.pastMonth.length > 0 && (
+                <div className="mb-4">
+                  <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
+                    Past 30 Days
                   </div>
-                )}
+                  {groupedNotes.pastMonth.map((note) => (
+                    <NoteItem
+                      key={note._id}
+                      note={note}
+                      onClick={() => handleItemClick(note)}
+                      isSelected={allNotes.indexOf(note) === selectedIndex}
+                    />
+                  ))}
+                </div>
+              )}
 
-                {groupedNotes.older.length > 0 && (
-                  <div className="mb-4">
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
-                      Older
-                    </div>
-                    {groupedNotes.older.map((note) => (
-                      <NoteItem
-                        key={note._id}
-                        note={note}
-                        onClick={() => handleItemClick(note)}
-                        isSelected={allNotes.indexOf(note) === selectedIndex}
-                      />
-                    ))}
+              {groupedNotes.older.length > 0 && (
+                <div className="mb-4">
+                  <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
+                    Older
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+                  {groupedNotes.older.map((note) => (
+                    <NoteItem
+                      key={note._id}
+                      note={note}
+                      onClick={() => handleItemClick(note)}
+                      isSelected={allNotes.indexOf(note) === selectedIndex}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Footer */}

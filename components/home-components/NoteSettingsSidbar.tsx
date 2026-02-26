@@ -115,7 +115,7 @@ export default function NoteSettingsSidbar({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-medium" sideOffset={5}>
+            <TooltipContent side="right" sideOffset={5}>
               {getNote?.favorite ? "Unpin note" : "Pin note"}
             </TooltipContent>
           </Tooltip>
@@ -130,7 +130,7 @@ export default function NoteSettingsSidbar({
                 <X size={16} className=" text-primary" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-medium" sideOffset={5}>
+            <TooltipContent side="right" sideOffset={5}>
               Delete note
             </TooltipContent>
           </Tooltip>

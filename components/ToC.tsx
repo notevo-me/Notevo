@@ -49,7 +49,7 @@ export const ToCItem = ({ item, onItemClick, isExpanded }: ToCItemProps) => {
         href={`#${item.id}`}
         onClick={(e) => onItemClick(e, item)}
         className={`
-          flex items-center justify-end gap-2 py-1 px-2 rounded-l-lg no-underline
+        flex items-center justify-end gap-2 py-[5px] px-2 rounded-l-lg no-underline
           transition-all duration-200
           ${
             item.isActive && !item.isScrolledOver
@@ -65,8 +65,8 @@ export const ToCItem = ({ item, onItemClick, isExpanded }: ToCItemProps) => {
             h-px flex-shrink-0 transition-all duration-200
             ${
               item.isActive && !item.isScrolledOver
-                ? "bg-primary w-6"
-                : "bg-primary/50 w-4 group-hover:w-6"
+                ? "bg-primary h-[3px] w-6"
+                : "bg-primary/70 w-4 group-hover:w-6"
             }
           `}
           style={{
@@ -438,7 +438,7 @@ export const CompactFloatingToC = ({
   }
 
   return (
-    <div className="fixed right-3 top-32 z-[9000]">
+    <div className="fixed right-3 top-32 z-50">
       <div
         className={`
           transition-all duration-300 ease-out px-0.5 border border-solid rounded-l-lg bg-background/60 backdrop-blur-xl

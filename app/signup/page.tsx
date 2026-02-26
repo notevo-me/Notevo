@@ -152,7 +152,7 @@ export default function SignInPage() {
             }}
           />
         </motion.svg>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <span className=" w-full flex justify-start items-center px-1 ">
             <Badge variant="secondary" className="text-xs w-fit">
               BETA
@@ -231,7 +231,7 @@ export default function SignInPage() {
               </div>
             </CardContent>
           </Card>
-          <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-foreground">
+          <div className="text-balance text-center text-xs text-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-muted-foreground">
             By signing up and continue, you agree to our{" "}
             <Link target="_blank" prefetch={true} href="/terms-of-service">
               Terms of Service
