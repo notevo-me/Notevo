@@ -14,8 +14,10 @@ import {
   Wrench,
   Bot,
   RefreshCw,
+  FileSymlink,
 } from "lucide-react";
 import { NOISE_PNG } from "@/lib/data";
+import { useMediaQuery } from "react-responsive";
 const sections = [
   { id: "liability", label: "Liability", icon: Shield, number: "01" },
   { id: "account", label: "Account", icon: User, number: "02" },
@@ -76,11 +78,11 @@ function SectionBlock({
 
 export default function TermsPage() {
   const [scrolled, setScrolled] = useState(false);
-
+  const isMobile = useMediaQuery({ maxWidth: 640 });
   useEffect(() => {
     const onScroll = () => {
       const docH = document.documentElement.scrollHeight - window.innerHeight;
-      setScrolled(window.scrollY > 200);
+      setScrolled(window.scrollY > 80);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -330,12 +332,26 @@ export default function TermsPage() {
             </div>
             <div className="w-px h-5 bg-muted/50 mx-1" />
           </div>
-          <Button asChild size="sm" className="gap-1.5 ">
-            <Link href="/">
-              <Home className="w-3 h-3" />
-              Back to Home
-            </Link>
-          </Button>
+          <div className=" gap-2 flex justify-between items-center">
+            <Button asChild size="sm" className="gap-1.5 h-8 px-2 text-xs">
+              <Link href="/">
+                <Home className="w-3 h-3" />
+                Home
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="gap-1.5 h-8 px-2 text-xs"
+            >
+              <Link prefetch={true} href="/privacy-policy">
+                <FileSymlink className="w-3 h-3" />
+
+                {isMobile ? `Privacy...` : "Privacy Policy"}
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
