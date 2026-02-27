@@ -55,7 +55,7 @@ export default function MoreAboutMe() {
                       lineHeight: "37px",
                     }}
                   >
-                    I've been looking for a note-taking app that's simpler than
+                    I've been looking for a Note Taking app that's simpler than
                     Notion but more organized than Google Keep.
                   </p>
                   <p
@@ -67,8 +67,8 @@ export default function MoreAboutMe() {
                     }}
                   >
                     Something clean, structured, with a rich text editor. That's
-                    what Notevo's trying to be: a minimal, structured,
-                    note-taking app.
+                    what Notevo's trying to be: a minimal, structured, Note
+                    Taking app.
                   </p>
                 </div>
 
