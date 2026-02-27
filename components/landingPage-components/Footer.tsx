@@ -115,7 +115,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="mailto:someone@example.com"
+                    href="mailto:support@notevo.me"
                     className="hover:underline"
                   >
                     support@notevo.me
