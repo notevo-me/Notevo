@@ -49,7 +49,7 @@ export const ToCItem = ({ item, onItemClick, isExpanded }: ToCItemProps) => {
         href={`#${item.id}`}
         onClick={(e) => onItemClick(e, item)}
         className={`
-        flex items-center justify-end gap-2 py-[5px] px-2 rounded-l-lg no-underline
+        flex items-center justify-end gap-2 py-1.5 px-2 rounded-l-lg no-underline
           transition-all duration-200
           ${
             item.isActive && !item.isScrolledOver
@@ -62,11 +62,11 @@ export const ToCItem = ({ item, onItemClick, isExpanded }: ToCItemProps) => {
         {/* Horizontal line indicator */}
         <div
           className={`
-            h-px flex-shrink-0 transition-all duration-200
+            h-0.5 flex-shrink-0 transition-all duration-200
             ${
               item.isActive && !item.isScrolledOver
                 ? "bg-primary h-[3px] w-6"
-                : "bg-primary/70 w-4 group-hover:w-6"
+                : "bg-primary/60 w-4 group-hover:w-6"
             }
           `}
           style={{
