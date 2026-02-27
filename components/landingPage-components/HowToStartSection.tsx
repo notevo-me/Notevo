@@ -8,14 +8,97 @@ import { Button } from "@/components/ui/button";
 import SectionHeading from "./SectionHeading";
 import Section from "@/components/ui/Section";
 import Link from "next/link";
-import { FolderClosed } from "lucide-react";
+import { FolderClosed, FolderX, Clock } from "lucide-react";
+
 interface Step {
   id: string;
   StepNum: string;
   Title: string;
   Body: string;
 }
-
+const MacHandPointer = () => {
+  return (
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      width="42"
+      height="42"
+    >
+      <g>
+        <defs>
+          <rect id="SVGID_1_" width="32" height="32" />
+        </defs>
+        <clipPath id="SVGID_2_">
+          <use xlinkHref="#SVGID_1_" overflow="visible" />
+        </clipPath>
+        <path
+          clipPath="url(#SVGID_2_)"
+          fill="#FFFFFF"
+          d="M11.3,20.4c-0.3-0.4-0.6-1.1-1.2-2c-0.3-0.5-1.2-1.5-1.5-1.9
+        c-0.2-0.4-0.2-0.6-0.1-1c0.1-0.6,0.7-1.1,1.4-1.1c0.5,0,1,0.4,1.4,0.7c0.2,0.2,0.5,0.6,0.7,0.8c0.2,0.2,0.2,0.3,0.4,0.5
+        c0.2,0.3,0.3,0.5,0.2,0.1c-0.1-0.5-0.2-1.3-0.4-2.1c-0.1-0.6-0.2-0.7-0.3-1.1c-0.1-0.5-0.2-0.8-0.3-1.3c-0.1-0.3-0.2-1.1-0.3-1.5
+        c-0.1-0.5-0.1-1.4,0.3-1.8c0.3-0.3,0.9-0.4,1.3-0.2c0.5,0.3,0.8,1,0.9,1.3c0.2,0.5,0.4,1.2,0.5,2c0.2,1,0.5,2.5,0.5,2.8
+        c0-0.4-0.1-1.1,0-1.5c0.1-0.3,0.3-0.7,0.7-0.8c0.3-0.1,0.6-0.1,0.9-0.1c0.3,0.1,0.6,0.3,0.8,0.5c0.4,0.6,0.4,1.9,0.4,1.8
+        c0.1-0.4,0.1-1.2,0.3-1.6c0.1-0.2,0.5-0.4,0.7-0.5c0.3-0.1,0.7-0.1,1,0c0.2,0,0.6,0.3,0.7,0.5c0.2,0.3,0.3,1.3,0.4,1.7
+        c0,0.1,0.1-0.4,0.3-0.7c0.4-0.6,1.8-0.8,1.9,0.6c0,0.7,0,0.6,0,1.1c0,0.5,0,0.8,0,1.2c0,0.4-0.1,1.3-0.2,1.7
+        c-0.1,0.3-0.4,1-0.7,1.4c0,0-1.1,1.2-1.2,1.8c-0.1,0.6-0.1,0.6-0.1,1c0,0.4,0.1,0.9,0.1,0.9s-0.8,0.1-1.2,0c-0.4-0.1-0.9-0.8-1-1.1
+        c-0.2-0.3-0.5-0.3-0.7,0c-0.2,0.4-0.7,1.1-1.1,1.1c-0.7,0.1-2.1,0-3.1,0c0,0,0.2-1-0.2-1.4c-0.3-0.3-0.8-0.8-1.1-1.1L11.3,20.4z"
+        />
+        <path
+          clipPath="url(#SVGID_2_)"
+          fill="none"
+          stroke="#000000"
+          strokeWidth="0.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M11.3,20.4c-0.3-0.4-0.6-1.1-1.2-2c-0.3-0.5-1.2-1.5-1.5-1.9c-0.2-0.4-0.2-0.6-0.1-1c0.1-0.6,0.7-1.1,1.4-1.1c0.5,0,1,0.4,1.4,0.7
+        c0.2,0.2,0.5,0.6,0.7,0.8c0.2,0.2,0.2,0.3,0.4,0.5c0.2,0.3,0.3,0.5,0.2,0.1c-0.1-0.5-0.2-1.3-0.4-2.1c-0.1-0.6-0.2-0.7-0.3-1.1
+        c-0.1-0.5-0.2-0.8-0.3-1.3c-0.1-0.3-0.2-1.1-0.3-1.5c-0.1-0.5-0.1-1.4,0.3-1.8c0.3-0.3,0.9-0.4,1.3-0.2c0.5,0.3,0.8,1,0.9,1.3
+        c0.2,0.5,0.4,1.2,0.5,2c0.2,1,0.5,2.5,0.5,2.8c0-0.4-0.1-1.1,0-1.5c0.1-0.3,0.3-0.7,0.7-0.8c0.3-0.1,0.6-0.1,0.9-0.1
+        c0.3,0.1,0.6,0.3,0.8,0.5c0.4,0.6,0.4,1.9,0.4,1.8c0.1-0.4,0.1-1.2,0.3-1.6c0.1-0.2,0.5-0.4,0.7-0.5c0.3-0.1,0.7-0.1,1,0
+        c0.2,0,0.6,0.3,0.7,0.5c0.2,0.3,0.3,1.3,0.4,1.7c0,0.1,0.1-0.4,0.3-0.7c0.4-0.6,1.8-0.8,1.9,0.6c0,0.7,0,0.6,0,1.1
+        c0,0.5,0,0.8,0,1.2c0,0.4-0.1,1.3-0.2,1.7c-0.1,0.3-0.4,1-0.7,1.4c0,0-1.1,1.2-1.2,1.8c-0.1,0.6-0.1,0.6-0.1,1
+        c0,0.4,0.1,0.9,0.1,0.9s-0.8,0.1-1.2,0c-0.4-0.1-0.9-0.8-1-1.1c-0.2-0.3-0.5-0.3-0.7,0c-0.2,0.4-0.7,1.1-1.1,1.1
+        c-0.7,0.1-2.1,0-3.1,0c0,0,0.2-1-0.2-1.4c-0.3-0.3-0.8-0.8-1.1-1.1L11.3,20.4z"
+        />
+        <line
+          clipPath="url(#SVGID_2_)"
+          fill="none"
+          stroke="#000000"
+          strokeWidth="0.75"
+          strokeLinecap="round"
+          x1="19.6"
+          y1="20.7"
+          x2="19.6"
+          y2="17.3"
+        />
+        <line
+          clipPath="url(#SVGID_2_)"
+          fill="none"
+          stroke="#000000"
+          strokeWidth="0.75"
+          strokeLinecap="round"
+          x1="17.6"
+          y1="20.7"
+          x2="17.5"
+          y2="17.3"
+        />
+        <line
+          clipPath="url(#SVGID_2_)"
+          fill="none"
+          stroke="#000000"
+          strokeWidth="0.75"
+          strokeLinecap="round"
+          x1="15.6"
+          y1="17.3"
+          x2="15.6"
+          y2="20.7"
+        />
+      </g>
+    </svg>
+  );
+};
 const stepIcons = [UserPlus, PlusIcon, PenBoxIcon];
 
 /* ─── Mini UI Previews ─────────────────────────────────────── */
@@ -82,9 +165,8 @@ function SignUpPreview() {
         </p>
       </div>
       <motion.div
-        className="bg-primary text-primary-foreground rounded-lg py-2.5 text-center text-xs shadow-sm"
-        animate={done ? { scale: [1, 0.96, 1] } : {}}
-        transition={{ delay: 0.3, duration: 0.25 }}
+        className={`bg-primary text-primary-foreground text-center text-sm rounded-lg px-4 py-2 text-[11px] mt-1 shadow-sm transition-all duration-300 border-r border-b border-transparent translate-x-[0px] translate-y-[0px]${done ? " border-muted/50 translate-x-[-3px] translate-y-[-3px] rounded-lg shadow-[3px_3px_0px] shadow-primary " : ""}`}
+        transition={{ delay: 0.3, duration: 0.12 }}
       >
         Send sign-in link
       </motion.div>
@@ -105,6 +187,18 @@ function SignUpPreview() {
           </div>
         ))}
       </div>
+      {done && (
+        <motion.div
+          className="absolute pointer-events-none z-10 -rotate-12"
+          initial={{ left: "78%", top: "27%" }}
+          animate={
+            done ? { left: "50%", top: "30%" } : { left: "46%", top: "74%" }
+          }
+          transition={{ duration: 0.7, ease: "easeInOut" }}
+        >
+          <MacHandPointer />
+        </motion.div>
+      )}
     </div>
   );
 }
@@ -118,7 +212,7 @@ function WorkspacePreview() {
     function runLoop() {
       setPhase("idle");
       const t1 = setTimeout(() => setPhase("moving"), 600);
-      const t2 = setTimeout(() => setPhase("clicked"), 1400);
+      const t2 = setTimeout(() => setPhase("clicked"), 1100);
       const t3 = setTimeout(() => setPhase("created"), 1800);
       const t4 = setTimeout(runLoop, 4200);
       return () => {
@@ -138,7 +232,7 @@ function WorkspacePreview() {
         {phase !== "created" ? (
           <>
             <div className="w-11 h-11 rounded-lg bg-muted border border-border flex items-center justify-center text-xl">
-              <FolderClosed size={24} className=" text-primary" />
+              <FolderX size={24} className=" text-primary" />
             </div>
             <p className="text-sm font-bold text-foreground">
               Workspace not found
@@ -147,12 +241,7 @@ function WorkspacePreview() {
               You don't have any workspaces yet.
             </p>
             <motion.div
-              className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-[11px] mt-1 shadow-sm"
-              animate={
-                phase === "clicked"
-                  ? { scale: 0.93, opacity: 0.8 }
-                  : { scale: 1, opacity: 1 }
-              }
+              className={`bg-primary text-primary-foreground rounded-lg px-4 py-2 text-[11px] mt-1 shadow-sm transition-all duration-300 border-r border-b border-transparent translate-x-[0px] translate-y-[0px]${phase === "clicked" ? " border-muted/50 translate-x-[-3px] translate-y-[-3px] rounded-lg shadow-[3px_3px_0px] shadow-primary " : ""}`}
               transition={{ duration: 0.12 }}
             >
               Create a new workspace
@@ -184,17 +273,7 @@ function WorkspacePreview() {
               </div>
               <div className="flex items-center justify-between px-3 py-2 bg-muted/30">
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
+                  <Clock size={13} className="text-muted-foreground" />
                   2/25/2026
                 </div>
                 <span className="text-[10px] font-medium text-primary">
@@ -208,7 +287,7 @@ function WorkspacePreview() {
         {/* Cursor */}
         {phase !== "created" && (
           <motion.div
-            className="absolute pointer-events-none z-10"
+            className="absolute pointer-events-none z-10 -rotate-12"
             initial={{ left: "80%", top: "15%" }}
             animate={
               phase === "idle"
@@ -217,14 +296,7 @@ function WorkspacePreview() {
             }
             transition={{ duration: 0.7, ease: "easeInOut" }}
           >
-            <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
-              <path
-                d="M0 0L0 14L4 10L6.5 16L8.5 15L6 9L11 9L0 0Z"
-                fill="#202020"
-                stroke="white"
-                strokeWidth="1"
-              />
-            </svg>
+            <MacHandPointer />
           </motion.div>
         )}
       </div>
