@@ -21,7 +21,7 @@ export default function SignUpToday() {
           </h2>
           <p className="text-xl font-semibold text-muted-foreground">
             Start your journey today and experience the power of Simple,
-            Structured Note-Taking.
+            Structured Note Taking.
           </p>
         </div>
 

@@ -42,7 +42,7 @@ export const HowToStartSteps = [
     id: "3",
     StepNum: "3",
     Title: "Start Writing",
-    Body: "Press '/' for commands, or start writing and experience the power of Simple, Structured Note-Taking.",
+    Body: "Press '/' for commands, or start writing and experience the power of Simple, Structured Note Taking.",
   },
 ] as const;
 
@@ -127,7 +127,7 @@ export const Features = [
   {
     title: "Rich Text Editor",
     description:
-      "Create and edit notes with a Notion-style WYSIWYG editor, powered by Novel.rich text formatting.",
+      "Create and edit notes with a Notion style WYSIWYG editor, powered by Novel.rich text formatting.",
     icon: FileText,
   },
   {

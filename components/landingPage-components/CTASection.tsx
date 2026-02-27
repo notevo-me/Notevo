@@ -21,7 +21,7 @@ export default function CTASection() {
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             Join thousands of users who are already organizing their thoughts
             with Notevo. Start your journey today and experience the power of
-            AI-powered note-taking.
+            AI-powered Note Taking.
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <Link href="/signup">

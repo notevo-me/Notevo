@@ -155,7 +155,7 @@ export default function HeroSection() {
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <span className="bg-gradient-to-r from-primary/80 via-primary to-primary/80 bg-clip-text">
-                Note-Taking
+                Note Taking
               </span>
               <motion.svg
                 viewBox="0 0 300 40"
