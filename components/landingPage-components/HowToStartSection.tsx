@@ -165,7 +165,7 @@ function SignUpPreview() {
         </p>
       </div>
       <motion.div
-        className={`bg-primary text-primary-foreground text-center text-sm rounded-lg px-4 py-2 text-[11px] mt-1 transition-all duration-300 border-r border-b border-transparent translate-x-[0px] translate-y-[0px]${done ? " border-muted/50 translate-x-[-3px] translate-y-[-3px] rounded-lg shadow-[3px_3px_0px] shadow-primary " : ""}`}
+        className={`bg-primary text-primary-foreground text-center text-sm rounded-lg px-4 py-2 text-[11px] mt-1 transition-all duration-300 border-r border-b border-muted/50 translate-x-[0px] translate-y-[0px]${done ? " border-muted/50 translate-x-[-3px] translate-y-[-3px] rounded-lg shadow-[3px_3px_0px] shadow-primary " : ""}`}
         transition={{ delay: 0.3, duration: 0.12 }}
       >
         Send sign-in link
@@ -241,7 +241,7 @@ function WorkspacePreview() {
               You don't have any workspaces yet.
             </p>
             <motion.div
-              className={`bg-primary text-primary-foreground rounded-lg px-4 py-2 text-[11px] mt-1 shadow-sm transition-all duration-300 border-r border-b border-transparent translate-x-[0px] translate-y-[0px]${phase === "clicked" ? " border-muted/50 translate-x-[-3px] translate-y-[-3px] rounded-lg shadow-[3px_3px_0px] shadow-primary " : ""}`}
+              className={`bg-primary text-primary-foreground rounded-lg px-4 py-2 text-[11px] mt-1 transition-all duration-300 border-r border-b border-muted/50 translate-x-[0px] translate-y-[0px]${phase === "clicked" ? " border-muted/50 translate-x-[-3px] translate-y-[-3px] rounded-lg shadow-[3px_3px_0px] shadow-primary " : ""}`}
               transition={{ duration: 0.12 }}
             >
               Create a new workspace
