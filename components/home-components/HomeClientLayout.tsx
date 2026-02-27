@@ -48,7 +48,6 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
 
     return () => scrollContainer.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
-
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const pathSegments = pathname.split("/").filter((segment) => segment);
@@ -90,13 +89,13 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
         </div>
         <div
           ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-transparent"
+          className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-transparent py-6"
         >
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: showTopFade ? 1 : 0 }}
             transition={showTopFade ? fadeTransition.show : fadeTransition.hide}
-            className="sticky -top-6 left-0 w-full h-28 bg-gradient-to-b from-background from-25% to-transparent to-100% z-[5] pointer-events-none -mb-32"
+            className="sticky -top-12 left-0 w-full h-28 bg-gradient-to-b from-background from-25% to-transparent to-100% z-[5] pointer-events-none -mb-32"
             aria-hidden
           />
           {children}
