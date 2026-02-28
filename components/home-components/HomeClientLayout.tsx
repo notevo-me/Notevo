@@ -60,7 +60,7 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
     <div className="flex h-screen w-full bg-muted overflow-hidden">
       <AppSidebar />
       <main
-        className={`relative flex flex-col flex-1 h-auto transition-all duration-300 ease-in-out border-primary/20 ${
+        className={`relative flex flex-col flex-1 h-auto border-primary/20 ${
           open && !isMobile ? `rounded-tl-lg border-t border-l mt-3` : ""
         } rounded-none bg-background `}
       >
