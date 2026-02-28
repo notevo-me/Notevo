@@ -109,7 +109,7 @@ export default function TermsPage() {
           <div className="pt-16 pb-10 opacity-0 translate-y-3 animate-[fadeUp_0.4s_0.05s_ease_forwards]">
             <div className="text-[0.68rem]  tracking-widest uppercase mb-0.5 opacity-60">
               <p className="leading-tight text-[0.78rem] font-medium text-primary">
-                March 6, 2025
+                last modified: March 6, 2025
               </p>
             </div>
             <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight mb-3">
@@ -324,7 +324,7 @@ export default function TermsPage() {
             </div>
             <div className="leading-tight">
               <span className="block text-[0.62rem] text-muted/80 uppercase tracking-widest">
-                Last Modified
+                last modified
               </span>
               <span className="text-[0.78rem] font-medium text-secondary">
                 March 6, 2025

@@ -115,7 +115,7 @@ export default function PrivacyPage() {
           <div className="pt-16 pb-10 opacity-0 translate-y-3 animate-[fadeUp_0.4s_0.05s_ease_forwards]">
             <div className="text-[0.68rem] tracking-widest uppercase mb-0.5 opacity-60">
               <p className="leading-tight text-[0.78rem] font-medium text-primary">
-                December 2, 2025
+                Last Modified: December 2, 2025
               </p>
             </div>
             <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tight mb-3">
