@@ -907,7 +907,7 @@ const UserAccountSection = memo(function UserAccountSection({
                 </div>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <div className="w-full p-2">
+              <div className="w-full p-1">
                 <div className=" flex items-center justify-between">
                   <p className=" text-sm flex items-center flex-1">Theme :</p>
                   <ThemeToggle />
