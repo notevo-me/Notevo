@@ -16,10 +16,10 @@ export default function SignUpToday() {
         className="relative flex flex-col items-center justify-center gap-8 "
       >
         <div className="text-center space-y-4 ">
-          <h2 className="text-6xl md:text-7xl Desktop:text-[94px] font-bold tracking-tight bg-gradient-to-r from-primary/90 via-primary to-primary/90 bg-clip-text text-transparent">
-            Ready to Boost Your Productivity
+          <h2 className="text-5xl md:text-7xl Desktop:text-[94px] font-bold tracking-tight bg-gradient-to-r from-primary/90 via-primary to-primary/90 bg-clip-text text-transparent">
+            It Doesn't Have To Be Complicated
           </h2>
-          <p className="text-xl font-semibold text-muted-foreground">
+          <p className="text-lg md:text-xl font-semibold text-muted-foreground">
             Start your journey today and experience the power of Simple,
             Structured Note Taking.
           </p>

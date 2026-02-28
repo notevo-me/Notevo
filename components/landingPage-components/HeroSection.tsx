@@ -44,7 +44,7 @@ export default function HeroSection() {
       id="home"
       className="relative pb-12 pt-28 Desktop:pt-32 flex items-center justify-center overflow-hidden"
     >
-      {/* Real PNG grain noise overlay — always light mode, fixed values */}
+      {/* Real PNG grain noise overlay – always light mode, fixed values */}
       <div
         aria-hidden="true"
         className="pointer-events-none select-none absolute inset-0 mask-image-gradient"
@@ -58,7 +58,7 @@ export default function HeroSection() {
         }}
       />
 
-      {/* PaperPiece decorative element — top-left corner */}
+      {/* PaperPiece decorative element – top-left corner */}
       <div className="absolute -top-3 -left-14 z-[2]  pointer-events-none select-none">
         <PaperPieceIcon className="w-40 h-36 md:w-56 md:h-48 lg:w-72 lg:h-64" />
       </div>
@@ -135,24 +135,24 @@ export default function HeroSection() {
       <MaxWContainer className="z-[6] relative flex flex-col items-center justify-center space-y-5">
         {/* Centered Text Content */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 20, filter: "blur(12px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.65 }}
           className="space-y-5 text-center "
         >
           <motion.h1
             className="bg-gradient-to-r from-primary/80 via-primary to-primary/80  bg-clip-text text-transparent leading-[50px] text-[46px] md:text-8xl Desktop:text-[100px] font-bold tracking-tight"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            initial={{ opacity: 0, y: 20, filter: "blur(12px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.65, delay: 0.15 }}
           >
             <span>Simple, Structured</span>
             <br />
             <motion.span
               className="relative inline-block px-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
               <span className="bg-gradient-to-r from-primary/80 via-primary to-primary/80 bg-clip-text">
                 Note Taking
@@ -183,9 +183,9 @@ export default function HeroSection() {
           </motion.h1>
           <motion.p
             className="mx-auto max-w-2xl text-lg md:text-2xl text-muted-foreground font-bold"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.65, delay: 0.3 }}
           >
             Notevo helps you capture your thoughts{" "}
             <br className=" hidden Desktop:block tabletAir:block tabletPro:block" />{" "}
@@ -193,9 +193,9 @@ export default function HeroSection() {
           </motion.p>
           <motion.div
             className="flex gap-4 justify-center items-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.65, delay: 0.45 }}
           >
             <Button
               asChild
@@ -231,9 +231,9 @@ export default function HeroSection() {
           </motion.div>
           <motion.div
             className="flex items-center justify-center gap-8 pb-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.65, delay: 0.6 }}
           >
             <div className="flex -space-x-4">
               {status === "LoadingFirstPage" ? (
@@ -303,9 +303,9 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7 }}
+          initial={{ opacity: 0, y: 20, filter: "blur(16px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.75, delay: 0.55 }}
           className=" relative w-full p-1 Desktop:p-2 rounded-lg bg-gradient-to-t from-transparent from-10% to-primary/50 backdrop-blur-lg"
         >
           <Image
