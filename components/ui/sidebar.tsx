@@ -48,7 +48,6 @@ function useSidebar() {
   if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider.");
   }
-
   return context;
 }
 
@@ -78,7 +77,7 @@ const SidebarProvider = React.forwardRef<
       null,
     );
 
-    // On mount, set the width from the cookie
+    // On mount, read width from cookie
     React.useEffect(() => {
       if (typeof document !== "undefined") {
         const cookie = document.cookie
@@ -91,30 +90,15 @@ const SidebarProvider = React.forwardRef<
             return;
           }
         }
-        setSidebarWidthState(240); // fallback default
+        setSidebarWidthState(240);
       }
     }, []);
 
-    // Get initial state from cookie
-    const getInitialState = React.useCallback(() => {
-      if (typeof document === "undefined") return defaultOpen;
-      const cookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`));
-      if (cookie) {
-        const value = cookie.split("=")[1];
-        return value === "true";
-      }
-      return defaultOpen;
-    }, [defaultOpen]);
-
-    // This is the internal state of the sidebar.
-    // We use openProp and setOpenProp for control from outside the component.
     const [_open, _setOpen] = React.useState<boolean | null>(null);
     const open = openProp ?? _open;
+
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
-        // Ensure 'open' is always boolean for the updater function
         const currentOpen = open ?? false;
         const openState =
           typeof value === "function" ? value(currentOpen) : value;
@@ -123,26 +107,24 @@ const SidebarProvider = React.forwardRef<
         } else {
           _setOpen(openState);
         }
-
-        // This sets the cookie to keep the sidebar state.
         document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
       },
       [setOpenProp, open],
     );
 
+    // Only called once on mouseup — not during drag
     const setSidebarWidth = React.useCallback((width: number) => {
       setSidebarWidthState(width);
       document.cookie = `${SIDEBAR_WIDTH_COOKIE_NAME}=${width}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
     }, []);
 
-    // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
       return isMobile
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open);
     }, [isMobile, setOpen, setOpenMobile]);
 
-    // Adds a keyboard shortcut to toggle the sidebar.
+    // Keyboard shortcut
     React.useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
@@ -153,12 +135,11 @@ const SidebarProvider = React.forwardRef<
           toggleSidebar();
         }
       };
-
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
     }, [toggleSidebar]);
 
-    // On mount, set the open state from the cookie
+    // On mount, read open state from cookie
     React.useEffect(() => {
       if (typeof document !== "undefined") {
         const cookie = document.cookie
@@ -169,12 +150,10 @@ const SidebarProvider = React.forwardRef<
           _setOpen(value === "true");
           return;
         }
-        _setOpen(defaultOpen); // fallback default
+        _setOpen(defaultOpen);
       }
     }, [defaultOpen]);
 
-    // We add a state so that we can do data-state="expanded" or "collapsed".
-    // This makes it easier to style the sidebar with Tailwind classes.
     const state = open ? "expanded" : "collapsed";
 
     const contextValue = React.useMemo<SidebarContext>(
@@ -203,13 +182,19 @@ const SidebarProvider = React.forwardRef<
     );
 
     if (sidebarWidth === null || open === null) {
-      // Optionally, render a loading skeleton or nothing
       return null;
     }
 
     return (
       <SidebarContext.Provider value={contextValue}>
         <TooltipProvider delayDuration={0}>
+          {/* Kill all transitions on every child while resizing — prevents right-side lag */}
+          <style>{`
+            [data-resizing="true"] * {
+              transition: none !important;
+              animation: none !important;
+            }
+          `}</style>
           <div
             style={
               {
@@ -262,30 +247,46 @@ const Sidebar = React.memo(
         sidebarWidth,
         setSidebarWidth,
       } = useSidebar();
-      const [isResizing, setIsResizing] = React.useState(false);
+
+      // Refs for resize — no React state used during drag
+      const isResizingRef = React.useRef(false);
       const startXRef = React.useRef(0);
       const startWidthRef = React.useRef(0);
-      const sidebarRef = React.useRef<HTMLDivElement>(null);
       const rafRef = React.useRef<number>(0);
+      const sidebarRef = React.useRef<HTMLDivElement>(null);
+      // We'll directly mutate the CSS var on this wrapper element
+      const wrapperRef = React.useRef<HTMLElement | null>(null);
+
+      // Ref to the spacer div that pushes main content
+      const spacerRef = React.useRef<HTMLDivElement>(null);
 
       const handleMouseDown = React.useCallback(
         (e: React.MouseEvent) => {
-          setIsResizing(true);
+          e.preventDefault();
+          isResizingRef.current = true;
           startXRef.current = e.clientX;
           startWidthRef.current = sidebarWidth;
           document.body.style.cursor = "col-resize";
           document.body.style.userSelect = "none";
+
+          // Find the SidebarProvider wrapper div that holds --sidebar-width
+          wrapperRef.current = sidebarRef.current?.closest(
+            ".group\\/sidebar-wrapper",
+          ) as HTMLElement | null;
+
+          // Disable ALL transitions during drag so everything follows instantly
+          if (wrapperRef.current) {
+            wrapperRef.current.setAttribute("data-resizing", "true");
+          }
         },
         [sidebarWidth],
       );
 
-      const handleMouseMove = React.useCallback(
-        (e: MouseEvent) => {
-          if (!isResizing) return;
+      React.useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+          if (!isResizingRef.current) return;
 
-          if (rafRef.current) {
-            cancelAnimationFrame(rafRef.current);
-          }
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
           rafRef.current = requestAnimationFrame(() => {
             const delta = e.clientX - startXRef.current;
@@ -294,39 +295,58 @@ const Sidebar = React.memo(
               MAX_SIDEBAR_WIDTH,
             );
 
+            // Directly mutate DOM — zero React re-renders during drag
+            if (wrapperRef.current) {
+              wrapperRef.current.style.setProperty(
+                "--sidebar-width",
+                `${newWidth}px`,
+              );
+            }
+            // Update sidebar panel itself
             if (sidebarRef.current) {
               sidebarRef.current.style.width = `${newWidth}px`;
             }
-
-            setSidebarWidth(newWidth);
+            // Update the spacer div so main content moves in sync
+            if (spacerRef.current) {
+              spacerRef.current.style.width = `${newWidth}px`;
+            }
           });
-        },
-        [isResizing, setSidebarWidth],
-      );
+        };
 
-      const handleMouseUp = React.useCallback(() => {
-        setIsResizing(false);
-        document.body.style.cursor = "";
-        document.body.style.userSelect = "";
+        const handleMouseUp = () => {
+          if (!isResizingRef.current) return;
+          isResizingRef.current = false;
+          document.body.style.cursor = "";
+          document.body.style.userSelect = "";
 
-        if (rafRef.current) {
-          cancelAnimationFrame(rafRef.current);
-        }
-      }, []);
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-      React.useEffect(() => {
-        if (isResizing) {
-          window.addEventListener("mousemove", handleMouseMove);
-          window.addEventListener("mouseup", handleMouseUp);
-        }
+          // Re-enable transitions
+          if (wrapperRef.current) {
+            wrapperRef.current.removeAttribute("data-resizing");
+          }
+          // Reset inline widths so CSS var takes over cleanly
+          if (spacerRef.current) {
+            spacerRef.current.style.width = "";
+          }
+
+          // Only now commit final width to React state + cookie (once per drag)
+          if (sidebarRef.current) {
+            const finalWidth = parseInt(sidebarRef.current.style.width, 10);
+            if (!isNaN(finalWidth)) {
+              setSidebarWidth(finalWidth);
+            }
+          }
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
         return () => {
           window.removeEventListener("mousemove", handleMouseMove);
           window.removeEventListener("mouseup", handleMouseUp);
-          if (rafRef.current) {
-            cancelAnimationFrame(rafRef.current);
-          }
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
         };
-      }, [isResizing, handleMouseMove, handleMouseUp]);
+      }, [setSidebarWidth]);
 
       const sidebarClasses = React.useMemo(
         () =>
@@ -343,17 +363,13 @@ const Sidebar = React.memo(
         [side, variant, collapsible, className],
       );
 
-      const resizeHandle = React.useMemo(() => {
-        if (state === "expanded" && !isMobile) {
-          return (
-            <div
-              className="absolute right-0 top-0 h-full w-1 cursor-col-resize"
-              onMouseDown={handleMouseDown}
-            />
-          );
-        }
-        return null;
-      }, [state, isMobile, handleMouseDown]);
+      const resizeHandle =
+        state === "expanded" && !isMobile ? (
+          <div
+            className="absolute right-0 top-0 h-full w-1 cursor-col-resize transition-colors"
+            onMouseDown={handleMouseDown}
+          />
+        ) : null;
 
       if (collapsible === "none") {
         return (
@@ -400,6 +416,7 @@ const Sidebar = React.memo(
           data-side={side}
         >
           <div
+            ref={spacerRef}
             className={cn(
               "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
               "group-data-[collapsible=offcanvas]:w-0",
@@ -628,7 +645,6 @@ const SidebarGroupAction = React.forwardRef<
       data-sidebar="group-action"
       className={cn(
         "absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-lg p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-primary/20 hover:text-muted-foreground focus-visible:ring-0 [&>svg]:size-4 [&>svg]:shrink-0",
-        // Increases the hit area of the button on mobile.
         "after:absolute after:-inset-2 after:md:hidden",
         "group-data-[collapsible=icon]:hidden",
         className,
@@ -774,7 +790,6 @@ const SidebarMenuAction = React.forwardRef<
       data-sidebar="menu-action"
       className={cn(
         "absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-lg p-0 text-brand_tertiary outline-none ring-sidebar-ring transition-transform hover:bg-black hover:text-brand_tertiary focus-visible:ring-2 peer-hover/menu-button:text-brand_tertiary [&>svg]:size-4 [&>svg]:shrink-0",
-        // Increases the hit area of the button on mobile.
         "after:absolute after:-inset-2 after:md:hidden",
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",
@@ -817,7 +832,6 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean;
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
   const width = React.useMemo(() => {
     return `${Math.floor(Math.random() * 40) + 50}%`;
   }, []);
