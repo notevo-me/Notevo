@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,6 +22,8 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { MessageCircleHeart } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+
 const formSchema = z.object({
   feedback: z.string().min(5, {
     message: "Feedback must be at least 5 characters.",
@@ -75,7 +76,7 @@ export default function Feedback() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="SidebarMenuButton" className="relative p-1.5 flex ">
+        <Button variant="SidebarMenuButton" className=" px-2 h-8 ">
           <MessageCircleHeart size="16" className="mr-2 h-4 w-4 text-primary" />
           Feedback
         </Button>
@@ -96,11 +97,7 @@ export default function Feedback() {
                   <FormItem>
                     <FormLabel>Feedback</FormLabel>
                     <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Your feedback..."
-                        {...field}
-                      />
+                      <Textarea placeholder="Your feedback..." {...field} />
                     </FormControl>
                     <FormDescription>
                       Please let us know your thoughts or suggestions.
