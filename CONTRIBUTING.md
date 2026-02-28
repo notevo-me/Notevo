@@ -6,7 +6,7 @@
  
  2. **Clone Your Fork**
     ```bash
-    git clone https://github.com/notevo-me/Notevo.git
+    git clone https://github.com/notevome/Notevo.git
     cd Notevo
     ```
  
