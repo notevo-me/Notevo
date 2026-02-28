@@ -25,21 +25,29 @@ export function ThemeToggle() {
         }
       }}
       value={theme}
-      className="w-full border border-primary/20 bg-primary/10 rounded-lg p-0.5 justify-center items-center flex-1 gap-1"
+      className="w-full border border-primary/20 bg-primary/10 rounded-md px-[3px] h-[31px] justify-center items-center flex-1 gap-1"
       variant="SidebarMenuButton"
     >
-      <ToggleGroupItem value="light" aria-label="Light" className="flex-1 px-2">
-        <SunIcon className="h-4 w-4 text-primary" />
+      <ToggleGroupItem
+        value="light"
+        aria-label="Light"
+        className="flex-1 px-1 h-6 rounded-md"
+      >
+        <SunIcon className="h-3 w-3 text-primary" />
       </ToggleGroupItem>
-      <ToggleGroupItem value="dark" aria-label="Dark" className="flex-1 px-2 ">
-        <MoonIcon className="h-4 w-4 text-primary" />
+      <ToggleGroupItem
+        value="dark"
+        aria-label="Dark"
+        className="flex-1 px-1 h-6 rounded-md"
+      >
+        <MoonIcon className="h-3 w-3 text-primary " />
       </ToggleGroupItem>
       <ToggleGroupItem
         value="system"
         aria-label="System"
-        className="flex-1 px-2"
+        className="flex-1 px-1 h-6 rounded-md"
       >
-        <DesktopIcon className="h-4 w-4 text-primary" />
+        <DesktopIcon className="h-3 w-3 text-primary " />
       </ToggleGroupItem>
     </ToggleGroup>
   );
