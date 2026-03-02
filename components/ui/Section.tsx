@@ -24,8 +24,8 @@ export default function Section({
   initialY = 90,
   initialMargin = 90,
   initialRadius = 30,
-  initialMarginMobile = 12,
-  initialRadiusMobile = 12,
+  initialMarginMobile = 0,
+  initialRadiusMobile = 0,
   duration = 0.3,
   preloadOffset = 150,
 }: SectionProps) {
@@ -67,6 +67,18 @@ export default function Section({
   const resolvedDuration = duration ?? (isMobile ? 0.3 : 0.5);
 
   useEffect(() => {
+    // On mobile, skip all animations — just show content instantly
+    if (isMobile) {
+      controls.set({
+        y: 0,
+        opacity: 1,
+        marginLeft: 0,
+        marginRight: 0,
+        borderRadius: 0,
+      });
+      return;
+    }
+
     if (inView) {
       if (isFirstLoad.current) {
         // On first load, if already in view — just show instantly, no animation
@@ -121,7 +133,7 @@ export default function Section({
         transition: { ease: "easeIn", duration: resolvedDuration },
       });
     }
-  }, [inView]);
+  }, [inView, isMobile]);
 
   return (
     <motion.div
