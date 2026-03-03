@@ -1,6 +1,14 @@
 "use client";
-import { Calendar, FileText, LayoutGrid, List, Search } from "lucide-react";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import {
+  Calendar,
+  FileText,
+  LayoutGrid,
+  List,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "convex/react";
@@ -29,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getContentPreview } from "@/lib/getContentPreview";
 import { cn } from "@/lib/utils";
 import { usePaginatedQuery } from "convex/react";
-import { boolean } from "zod";
+
 type ViewMode = "grid" | "list";
 
 interface Note {
@@ -59,6 +67,7 @@ interface NotesDroppableContainerProps {
   tables: any[];
   setViewMode: (mode: ViewMode) => void;
 }
+
 interface NoteCardProps {
   note: Note;
   workspaceId?: Id<"workingSpaces">;
@@ -75,10 +84,172 @@ interface EmptyTableStateProps {
   workspaceSlug?: string;
   workspaceId?: Id<"workingSpaces">;
 }
+
 const STORAGE_KEYS = {
   VIEW_MODE: "notevo_view_mode",
   ACTIVE_TABLE: "notevo_active_table",
 };
+
+// ─── Slider Tab List ───────────────────────────────────────────────────────────
+
+interface SliderTabsListProps {
+  tables: any[];
+  activeTableId: string;
+  onTabChange: (id: string) => void;
+}
+
+function SliderTabsList({
+  tables,
+  activeTableId,
+  onTabChange,
+}: SliderTabsListProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const canScroll = canScrollLeft || canScrollRight;
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      ro.disconnect();
+    };
+  }, [checkScroll, tables]);
+
+  // When active tab changes, scroll it into view
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const activeBtn = el.querySelector(
+      `[data-tab-id="${activeTableId}"]`,
+    ) as HTMLElement | null;
+    if (activeBtn) {
+      const btnLeft = activeBtn.offsetLeft;
+      const btnRight = btnLeft + activeBtn.offsetWidth;
+      const visLeft = el.scrollLeft;
+      const visRight = visLeft + el.clientWidth;
+      if (btnLeft < visLeft + 16) {
+        el.scrollTo({ left: btnLeft - 16, behavior: "smooth" });
+      } else if (btnRight > visRight - 16) {
+        el.scrollTo({
+          left: btnRight - el.clientWidth + 16,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [activeTableId]);
+
+  const scroll = (dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const amount = el.clientWidth * 0.6;
+    el.scrollBy({
+      left: dir === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  };
+
+  // Single layout — scrolls automatically when content overflows
+  return (
+    <div className=" relative py-5">
+      <div className=" absolute -top-3 left-0 w-full Desktop:max-w-[900px] Desktop:w-fit">
+        {/* Left arrow */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => scroll("left")}
+          aria-label="Scroll tabs left"
+          className={cn(
+            "absolute left-1 top-1/2 -translate-y-1/2 z-20 h-10 rounded-md w-7 shadow-sm transition-all duration-200",
+            canScrollLeft
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none",
+          )}
+        >
+          <ChevronLeft className="h-3.5 w-3.5" />
+        </Button>
+
+        {/* Right arrow */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => scroll("right")}
+          aria-label="Scroll tabs right"
+          className={cn(
+            "absolute right-1 top-1/2 -translate-y-1/2 z-20 h-10 rounded-md w-7 shadow-sm transition-all duration-200",
+            canScrollRight
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none",
+          )}
+        >
+          <ChevronRight className="h-3.5 w-3.5" />
+        </Button>
+
+        {/* Left fade */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-40 z-10 pointer-events-none rounded-l-lg transition-opacity duration-200"
+          style={{
+            opacity: canScrollLeft ? 1 : 0,
+            background:
+              "linear-gradient(to right, hsl(var(--card)) 30%, transparent)",
+          }}
+        />
+        {/* Right fade */}
+        <div
+          className="absolute right-0 top-0 bottom-0 w-40 z-10 pointer-events-none rounded-r-lg transition-opacity duration-200"
+          style={{
+            opacity: canScrollRight ? 1 : 0,
+            background:
+              "linear-gradient(to left, hsl(var(--card)) 30%, transparent)",
+          }}
+        />
+
+        {/* TabsList — naturally sized, clips + scrolls when content overflows */}
+        <TabsList
+          className="flex justify-start items-center px-1 py-6 bg-card/90 backdrop-blur-sm rounded-lg border border-border w-full"
+          style={{ overflow: "clip" } as React.CSSProperties}
+        >
+          <div
+            ref={scrollRef}
+            className="flex items-center gap-2 flex-nowrap"
+            style={
+              {
+                overflowX: "auto",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              } as React.CSSProperties
+            }
+          >
+            {tables.map((table) => (
+              <TabsTrigger
+                key={table._id}
+                value={table._id}
+                data-tab-id={table._id}
+                className="px-4 py-2.5 rounded-lg whitespace-nowrap flex-shrink-0"
+              >
+                {table.name}
+              </TabsTrigger>
+            ))}
+          </div>
+        </TabsList>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function WorkingSpacePage() {
   const params = useParams();
@@ -119,14 +290,9 @@ export default function WorkingSpacePage() {
 
   const defaultTableId = useMemo(() => {
     if (!tables || tables.length === 0) return undefined;
-
     const storedTableExists =
       activeTableId && tables.some((t) => t._id === activeTableId);
-
-    if (storedTableExists) {
-      return activeTableId;
-    }
-
+    if (storedTableExists) return activeTableId;
     return tables[0]._id;
   }, [tables, activeTableId]);
 
@@ -141,13 +307,11 @@ export default function WorkingSpacePage() {
 
   useEffect(() => {
     if (!workspace?.name) return;
-
     const originalTitle = document.title;
     const metaDescription = document.querySelector('meta[name="description"]');
     const originalContent = metaDescription?.getAttribute("content");
 
     document.title = `${workspace.name} - Notevo Workspace`;
-
     const descriptionContent = `${workspace.name} workspace. `;
 
     if (metaDescription) {
@@ -171,13 +335,13 @@ export default function WorkingSpacePage() {
 
   return (
     <MaxWContainer className="my-5">
-      {/* Modern Gradient Header */}
-      <header className=" pb-5">
+      {/* Header */}
+      <header className="pb-5">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-muted from-20% via-transparent via-70% to-muted p-8">
           <div className="relative flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <h1 className="text-3xl md:text-4xl font-bold  mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">
                   {!workspace ? (
                     <div className="bg-primary/20 rounded-md animate-pulse h-10 w-64 inline-block" />
                   ) : (
@@ -205,18 +369,13 @@ export default function WorkingSpacePage() {
             onValueChange={handleTabChange}
             className="mt-6"
           >
-            <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 mb-6">
-              <TabsList className=" inline-flex items-center justify-start flex-warp w-fit min-w-full sm:min-w-fit flex-wrap gap-2 sm:gap-3 h-fit p-1 bg-card/90 backdrop-blur-sm rounded-lg border border-border">
-                {tables.map((table) => (
-                  <TabsTrigger
-                    key={table._id}
-                    value={table._id}
-                    className="px-4 py-2.5 rounded-lg"
-                  >
-                    {table.name}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+            {/* Slider Tab Bar */}
+            <div className="mb-6">
+              <SliderTabsList
+                tables={tables}
+                activeTableId={defaultTableId ?? ""}
+                onTabChange={handleTabChange}
+              />
             </div>
 
             {tables.map((table) => (
@@ -244,8 +403,7 @@ export default function WorkingSpacePage() {
   );
 }
 
-// Better approach: Track deleted notes in local state
-// Add this to your NotesDroppableContainer component in page.tsx
+// ─── Notes Container ───────────────────────────────────────────────────────────
 
 export function NotesDroppableContainer({
   tableId,
@@ -264,27 +422,18 @@ export function NotesDroppableContainer({
     { initialNumItems: 5 },
   );
 
-  // Track deleted notes locally for instant UI feedback
   const [deletedNoteIds, setDeletedNoteIds] = useState<Set<string>>(new Set());
 
-  // Reset deleted notes when table changes
   useEffect(() => {
     setDeletedNoteIds(new Set());
   }, [tableId]);
 
-  // Filter notes: remove deleted ones first, then apply search
   const filteredNotes = useMemo(() => {
-    // First, filter out deleted notes
     const notDeletedNotes = results.filter(
       (note) => note && !deletedNoteIds.has(note._id),
     );
-
-    // If no search query, return all non-deleted notes
     if (!searchQuery.trim()) return notDeletedNotes;
-
-    // Apply search filter
     const q = searchQuery.toLowerCase();
-
     return notDeletedNotes.filter((note) => {
       return (
         note.title?.toLowerCase().includes(q) ||
@@ -293,7 +442,6 @@ export function NotesDroppableContainer({
     });
   }, [results, searchQuery, deletedNoteIds]);
 
-  // Callback to handle note deletion
   const handleNoteDelete = useCallback((noteId: Id<"notes">) => {
     setDeletedNoteIds((prev) => {
       const newSet = new Set(prev);
@@ -304,7 +452,7 @@ export function NotesDroppableContainer({
 
   return (
     <div className="space-y-6">
-      {/* Enhanced Control Bar */}
+      {/* Control Bar */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
           <div className="relative flex-1 max-w-md">
@@ -360,7 +508,7 @@ export function NotesDroppableContainer({
         </div>
       </div>
 
-      {/* Notes Grid/List with Loading State */}
+      {/* Notes */}
       {status === "LoadingFirstPage" ? (
         <NotesSkeleton viewMode={viewMode} />
       ) : searchQuery && filteredNotes.length === 0 ? (
@@ -402,7 +550,6 @@ export function NotesDroppableContainer({
             ))}
           </div>
 
-          {/* Show More Button */}
           {status === "CanLoadMore" && (
             <div className="flex justify-center mt-6">
               <Button
@@ -415,7 +562,6 @@ export function NotesDroppableContainer({
             </div>
           )}
 
-          {/* Loading More Indicator */}
           {status === "LoadingMore" && (
             <div className="flex justify-center mt-6">
               <Button variant="outline" disabled className="border-border">
@@ -429,6 +575,8 @@ export function NotesDroppableContainer({
     </div>
   );
 }
+
+// ─── Note Cards ────────────────────────────────────────────────────────────────
 
 function GridNoteCard({ note, workspaceId, onDelete }: NoteCardProps) {
   const isEmpty = !note.body || note.body.trim() === "";
@@ -563,6 +711,8 @@ function ListNoteCard({ note, workspaceId, onDelete }: NoteCardProps) {
   );
 }
 
+// ─── Empty States ──────────────────────────────────────────────────────────────
+
 function EmptySearchResults({
   searchQuery,
   onClearSearch,
@@ -622,6 +772,8 @@ function EmptyTableState({
   );
 }
 
+// ─── Skeletons ─────────────────────────────────────────────────────────────────
+
 function NotesSkeleton({ viewMode }: { viewMode: ViewMode }) {
   if (viewMode === "grid") {
     return (
@@ -661,12 +813,10 @@ function NotesSkeleton({ viewMode }: { viewMode: ViewMode }) {
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
               <div className="h-10 w-10 rounded-full bg-primary/20 animate-pulse flex-shrink-0" />
-
               <div className="flex-1 min-w-0 space-y-2">
                 <div className="h-5 w-2/3 bg-primary/20 rounded animate-pulse" />
                 <div className="h-4 w-full bg-primary/20 rounded animate-pulse" />
               </div>
-
               <div className="flex items-center gap-3">
                 <div className="h-4 w-24 bg-primary/20 rounded animate-pulse" />
                 <div className="h-5 w-5 bg-primary/20 rounded animate-pulse" />
@@ -679,6 +829,7 @@ function NotesSkeleton({ viewMode }: { viewMode: ViewMode }) {
     </div>
   );
 }
+
 function TablesSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
