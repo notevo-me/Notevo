@@ -127,7 +127,7 @@ export const Features = [
   {
     title: "Rich Text Editor",
     description:
-      "Create and edit notes with a Notion style WYSIWYG editor, powered by Novel.rich text formatting.",
+      "Create and edit notes with a Notion style WYSIWYG editor, powered by tiptap.dev text formatting.",
     icon: FileText,
   },
   {
