@@ -7,7 +7,7 @@ I've been looking for a Note Taking app that's simpler than Notion but more orga
  ## To Do :
  
  - [x] fix the routing
- - [ ] add the toaster notification
+ - [x] add the toaster notification
  - [x] fix the middleware 404 on redirect
  - [x] add the shareable Link
  - [ ] real time collaboration
