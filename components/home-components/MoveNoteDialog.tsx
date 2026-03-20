@@ -28,7 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CreateTableBtn from "./CreateTableBtn";
-
+import IntentPrefetchLink from "../ui/IntentPrefetchLink";
 interface MoveNoteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -189,18 +189,14 @@ export default function MoveNoteDialog({
         title: "Note moved successfully ",
         description: "hey go and take a look at your stuff !!",
         action: (
-          <Button
-            variant="secondary"
-            className="px-4 flex justify-center items-center gap-2"
-            size="sm"
-            onClick={() =>
-              router.push(
-                `/home/${result.workingSpaceId}/${result.slug}?id=${note._id}`,
-              )
-            }
-          >
-            <FileSymlink size={16} />
-            Checkout
+          <Button variant="secondary" className="px-4 " size="sm">
+            <IntentPrefetchLink
+              href={`/home/${result.workingSpaceId}/${result.slug}?id=${note._id}`}
+              className="flex justify-center items-center gap-2"
+            >
+              <FileSymlink size={16} />
+              Checkout
+            </IntentPrefetchLink>
           </Button>
         ),
       });

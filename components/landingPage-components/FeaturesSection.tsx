@@ -15,6 +15,8 @@ const featureVideos: Record<string, string> = {
     "https://ik.imagekit.io/1u6qts3nc/notevo/notevo-Publish.mp4?updatedAt=1773361648321",
   "Download Your Stuff":
     "https://ik.imagekit.io/1u6qts3nc/notevo/notevo-Downloadyourstufff.mp4?updatedAt=1773361630479",
+  "Move Your Stuff":
+    "https://ik.imagekit.io/bxpyeqctr/notevo/notevo-movenotevid.mp4?updatedAt=1773971594885",
 };
 
 const containerVariants = {
