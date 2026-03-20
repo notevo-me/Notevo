@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   Activity,
   FileDown,
+  FileSymlink,
 } from "lucide-react";
 
 export const NavLinks = [
@@ -154,6 +155,12 @@ export const Features = [
     description:
       "Export and download your notes anytime, anywhere. Keep a local copy of everything you create your data, your way.",
     icon: FileDown,
+  },
+  {
+    title: "Move Your Stuff",
+    description:
+      "Move your notes around and organize your thoughts, manage your workspace and you know your notes your way .",
+    icon: FileSymlink,
   },
 ] as const;
 
