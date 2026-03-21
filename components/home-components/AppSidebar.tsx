@@ -43,7 +43,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { Button } from "@/components/ui/button";
 import { useState, useCallback, memo, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
-import IntentPrefetchLink from "@/components/ui/IntentPrefetchLink";
+import IntentPrefetchLink from "@/components/IntentPrefetchLink";
 import SearchDialog from "./SearchDialog";
 import LoadingAnimation from "../ui/LoadingAnimation";
 import SkeletonTextAnimation from "../ui/SkeletonTextAnimation";
@@ -355,7 +355,6 @@ const PinnedNoteItem = memo(
     const updateNote = useMutation(api.notes.updateNote).withOptimisticUpdate(
       (local, args) => {
         const { _id, title, favorite } = args;
-
         // Update single note query if it exists
         const note = local.getQuery(api.notes.getNoteById, { _id });
         if (note) {
@@ -370,7 +369,6 @@ const PinnedNoteItem = memo(
             },
           );
         }
-
         // Note: Paginated queries (getFavNotes) will be synced by the server
         // Direct updates to paginated query results are complex and handled server-side
       },
@@ -630,7 +628,6 @@ const WorkspaceItem = memo(
       api.workingSpaces.updateWorkingSpace,
     ).withOptimisticUpdate((local, args) => {
       const { _id, name } = args;
-
       // Update in getRecentWorkingSpaces
       const workspaces = local.getQuery(
         api.workingSpaces.getRecentWorkingSpaces,

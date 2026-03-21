@@ -25,7 +25,7 @@ import NoteSettings from "@/components/home-components/NoteSettings";
 import TablesNotFound from "@/components/home-components/TablesNotFound";
 import SkeletonTextAnimation from "@/components/ui/SkeletonTextAnimation";
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
-import IntentPrefetchLink from "@/components/ui/IntentPrefetchLink";
+import IntentPrefetchLink from "@/components/IntentPrefetchLink";
 import {
   Card,
   CardContent,
@@ -434,7 +434,8 @@ export default function WorkingSpacePageClient({
     const prev = workspacePageMemoryCache.get(key) ?? {};
     if (workspaceQuery !== undefined || tablesQuery !== undefined) {
       workspacePageMemoryCache.set(key, {
-        workspace: workspaceQuery !== undefined ? workspaceQuery : prev.workspace,
+        workspace:
+          workspaceQuery !== undefined ? workspaceQuery : prev.workspace,
         tables: tablesQuery !== undefined ? tablesQuery : prev.tables,
       });
     }
@@ -748,8 +749,7 @@ export function NotesDroppableContainer({
     return notDeletedNotes.filter((note) => {
       const searchableText = (note.preview ?? note.body ?? "").toLowerCase();
       return (
-        note.title?.toLowerCase().includes(q) ||
-        searchableText.includes(q)
+        note.title?.toLowerCase().includes(q) || searchableText.includes(q)
       );
     });
   }, [stableResults, searchQuery, deletedNoteIds]);
@@ -1054,7 +1054,9 @@ function GridNoteCard({ note, workspaceId, onDelete }: NoteCardProps) {
           asChild
           className="h-7 text-xs hover:bg-primary/10"
         >
-          <IntentPrefetchLink href={`/home/${workspaceId}/${note.slug}?id=${note._id}`}>
+          <IntentPrefetchLink
+            href={`/home/${workspaceId}/${note.slug}?id=${note._id}`}
+          >
             Open
           </IntentPrefetchLink>
         </Button>
@@ -1219,7 +1221,9 @@ function ListNoteCard({ note, workspaceId, onDelete }: NoteCardProps) {
               asChild
               className="h-7 text-xs hover:bg-primary/10"
             >
-              <IntentPrefetchLink href={`/home/${workspaceId}/${note.slug}?id=${note._id}`}>
+              <IntentPrefetchLink
+                href={`/home/${workspaceId}/${note.slug}?id=${note._id}`}
+              >
                 Open
               </IntentPrefetchLink>
             </Button>

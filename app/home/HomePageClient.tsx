@@ -18,7 +18,7 @@ import WorkingSpaceSettings from "@/components/home-components/WorkingSpaceSetti
 import WorkingSpaceNotFound from "@/components/home-components/WorkingSpaceNotFound";
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
 import SkeletonTextAnimation from "@/components/ui/SkeletonTextAnimation";
-import IntentPrefetchLink from "@/components/ui/IntentPrefetchLink";
+import IntentPrefetchLink from "@/components/IntentPrefetchLink";
 import { useQuery } from "@/cache/useQuery";
 import {
   Card,
@@ -551,7 +551,9 @@ function WorkspaceCard({
           asChild
           className="h-7 px-2 text-xs hover:bg-primary/10"
         >
-          <IntentPrefetchLink href={`/home/${workspace._id}`}>Open</IntentPrefetchLink>
+          <IntentPrefetchLink href={`/home/${workspace._id}`}>
+            Open
+          </IntentPrefetchLink>
         </Button>
       </CardFooter>
     </Card>
