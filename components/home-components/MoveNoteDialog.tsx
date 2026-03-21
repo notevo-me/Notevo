@@ -28,7 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CreateTableBtn from "./CreateTableBtn";
-import IntentPrefetchLink from "../ui/IntentPrefetchLink";
+import IntentPrefetchLink from "../IntentPrefetchLink";
 interface MoveNoteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
