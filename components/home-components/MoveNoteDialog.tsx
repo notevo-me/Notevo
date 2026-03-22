@@ -74,7 +74,7 @@ export default function MoveNoteDialog({
   const [movingTableId, setMovingTableId] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const moveTargets = useQuery(api.notes.getMoveTargets, {
+  const moveTargets = useQuery(api.notes.getWorkspaceTree, {
     searchQuery: debouncedQuery || undefined,
   }) as any[] | undefined;
 
@@ -87,7 +87,7 @@ export default function MoveNoteDialog({
       if (!currentNote) return;
 
       const targets =
-        local.getQuery(api.notes.getMoveTargets, {
+        local.getQuery(api.notes.getWorkspaceTree, {
           searchQuery: undefined,
         }) ?? [];
       const targetWorkspace = targets.find(
@@ -214,7 +214,7 @@ export default function MoveNoteDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 overflow-hidden bg-card border-border md:min-w-[500px] gap-0 shadow-2xl">
+      <DialogContent className="p-0 overflow-hidden bg-muted border-border md:min-w-[500px] gap-0 shadow-2xl">
         <DialogHeader className="px-5 pt-4 pb-3 border-b border-border">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/70 mb-1">
             Move note
@@ -226,7 +226,7 @@ export default function MoveNoteDialog({
             Select a destination table in this workspace or any other workspace.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-1 bg-card">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-1 bg-muted">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <Search className="h-4 w-4 shrink-0 text-primary/70" />
             <Input
@@ -254,13 +254,13 @@ export default function MoveNoteDialog({
           </Button>
         </div>
 
-        <div className="min-h-[320px] max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent p-3 bg-background/50">
+        <div className="min-h-[320px] max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent p-3 bg-card">
           {moveTargets === undefined ? (
             <div className="space-y-2 p-2">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
-                  className="h-10 rounded-lg bg-primary/8 animate-pulse"
+                  className="h-10 rounded-lg bg-primary/10 animate-pulse"
                 />
               ))}
             </div>
@@ -290,7 +290,7 @@ export default function MoveNoteDialog({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-full flex-1 justify-start gap-2 px-2 text-sm font-medium hover:bg-primary/10 hover:text-primary"
+                      className="h-8 w-full flex-1 justify-start gap-2 px-2 text-sm font-medium border-0 border-primary/10 hover:border-2 hover:bg-transparent"
                       onClick={() => toggleWorkspace(workspaceId)}
                     >
                       <ChevronRight
@@ -313,7 +313,7 @@ export default function MoveNoteDialog({
                     </Button>
 
                     {isExpanded && (
-                      <div className="space-y-0.5 px-1 py-1 bg-background/30">
+                      <div className="space-y-0.5 px-1 py-1">
                         {tables.length === 0 ? (
                           <div className=" flex flex-col justify-center items-center gap-2 rounded-lg mx-2 py-3 bg-card text-xs text-muted-foreground/60 text-center">
                             No tables in this workspace yet.
@@ -351,7 +351,7 @@ export default function MoveNoteDialog({
                                 className={cn(
                                   "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left transition-colors",
                                   isCurrentTarget
-                                    ? "cursor-not-allowed bg-secondary/50 text-primary"
+                                    ? "cursor-not-allowed bg-primary/10"
                                     : " hover:bg-primary/10",
                                 )}
                               >
@@ -370,7 +370,7 @@ export default function MoveNoteDialog({
                                   {isMoving ? (
                                     <LoadingAnimation className="h-4 w-4 text-primary" />
                                   ) : isCurrentTarget ? (
-                                    <span className="text-[10px] font-medium border border-primary/20 bg-primary/5 text-primary/60 px-2 py-0.5 rounded-md">
+                                    <span className="text-xs font-medium border border-secondary-foreground/20 bg-secondary text-secondary-foreground px-2 py-0.5 rounded-md">
                                       current
                                     </span>
                                   ) : (
