@@ -1,6 +1,15 @@
 "use client";
 import React from "react";
-import { ArrowDownUp, Undo2, Clock, FileText, Search } from "lucide-react";
+import {
+  ArrowDownUp,
+  Undo2,
+  Clock,
+  FileText,
+  Search,
+  ChevronRight,
+  Folder,
+  FolderOpen,
+} from "lucide-react";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,8 +23,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
-import { usePaginatedQuery } from "@/cache/usePaginatedQuery";
+import { useQuery } from "@/cache/useQuery";
 import LoadingAnimation from "@/components/ui/LoadingAnimation";
+import { cn } from "@/lib/utils";
 
 interface SearchDialogProps {
   variant?: "default" | "SidebarMenuButton";
@@ -25,12 +35,13 @@ interface SearchDialogProps {
   sidbarMobile?: boolean;
 }
 
+// ─── Time helper
+
 const getRelativeTime = (date: Date) => {
   const now = new Date();
   const diffInDays = Math.floor(
     (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
   );
-
   if (diffInDays === 0) return "Today";
   if (diffInDays === 1) return "Yesterday";
   if (diffInDays < 7) return `${diffInDays} days ago`;
@@ -38,36 +49,7 @@ const getRelativeTime = (date: Date) => {
   return `${Math.floor(diffInDays / 30)} months ago`;
 };
 
-const groupNotesByTime = (notes: any[]) => {
-  const now = new Date();
-  const today = new Date(now.setHours(0, 0, 0, 0));
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const lastWeek = new Date(today);
-  lastWeek.setDate(lastWeek.getDate() - 7);
-  const lastMonth = new Date(today);
-  lastMonth.setDate(lastMonth.getDate() - 30);
-
-  return {
-    today: notes.filter((note) => new Date(note.createdAt) >= today),
-    yesterday: notes.filter(
-      (note) =>
-        new Date(note.createdAt) >= yesterday &&
-        new Date(note.createdAt) < today,
-    ),
-    pastWeek: notes.filter(
-      (note) =>
-        new Date(note.createdAt) >= lastWeek &&
-        new Date(note.createdAt) < yesterday,
-    ),
-    pastMonth: notes.filter(
-      (note) =>
-        new Date(note.createdAt) >= lastMonth &&
-        new Date(note.createdAt) < lastWeek,
-    ),
-    older: notes.filter((note) => new Date(note.createdAt) < lastMonth),
-  };
-};
+// ─── Sub-components
 
 function SearchLoadingSkeleton() {
   return (
@@ -101,7 +83,14 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
   );
 }
 
-function NoteItem({ note, onClick, isSelected, query, onIntentPrefetch }: any) {
+function NoteItem({
+  note,
+  onClick,
+  isSelected,
+  query,
+  onIntentPrefetch,
+  indented = false,
+}: any) {
   const href = `/home/${note.workingSpaceId}/${note.slug}?id=${note._id}`;
   return (
     <div
@@ -110,31 +99,37 @@ function NoteItem({ note, onClick, isSelected, query, onIntentPrefetch }: any) {
       onMouseEnter={() => onIntentPrefetch?.(href)}
       onFocus={() => onIntentPrefetch?.(href)}
       onTouchStart={() => onIntentPrefetch?.(href)}
-      className={`flex items-center gap-3 py-2.5 px-3 cursor-pointer rounded-lg transition-all ${
-        isSelected ? "bg-secondary/50 " : " hover:bg-accent"
-      }`}
+      className={cn(
+        "flex items-center gap-3 py-2.5 px-3 cursor-pointer rounded-lg transition-all",
+        indented && "ml-6",
+        isSelected ? "bg-primary/10" : "hover:bg-primary/10",
+      )}
     >
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+        className={cn(
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-colors",
           isSelected
             ? "border-primary/30 bg-primary/10 text-primary"
-            : "border-border bg-muted text-muted-foreground"
-        }`}
+            : "border-border bg-muted text-muted-foreground",
+        )}
       >
         <FileText size={14} />
       </div>
       <div className="flex-1 overflow-hidden">
         <p
-          className={`text-sm font-medium truncate transition-colors ${isSelected ? "text-primary" : "text-foreground"}`}
+          className={cn(
+            "text-sm font-medium truncate transition-colors",
+            isSelected ? "text-primary" : "text-foreground",
+          )}
         >
           <HighlightedText text={note.title || "Untitled"} query={query} />
         </p>
-        <p className="text-xs text-muted-foreground truncate mt-0.5">
-          {note.workingSpacesSlug || "Personal"}
-        </p>
       </div>
       <div
-        className={`flex items-center gap-1 text-xs shrink-0 transition-colors ${isSelected ? "text-primary/70" : "text-muted-foreground/60"}`}
+        className={cn(
+          "flex items-center gap-1 text-xs shrink-0",
+          isSelected ? "text-primary/70" : "text-muted-foreground/60",
+        )}
       >
         <Clock className="h-3 w-3" />
         <span>{getRelativeTime(new Date(note.createdAt))}</span>
@@ -142,6 +137,128 @@ function NoteItem({ note, onClick, isSelected, query, onIntentPrefetch }: any) {
     </div>
   );
 }
+// ─── Hierarchical WorkspaceTree
+
+function WorkspaceTree({
+  searchTargets,
+  expandedWorkspaceIds,
+  toggleWorkspace,
+  onNoteClick,
+  selectedNoteId,
+  query,
+  onIntentPrefetch,
+}: {
+  searchTargets: any[];
+  expandedWorkspaceIds: string[];
+  toggleWorkspace: (id: string) => void;
+  onNoteClick: (note: any) => void;
+  selectedNoteId?: string;
+  query: string;
+  onIntentPrefetch: (href: string) => void;
+}) {
+  return (
+    <div className="space-y-1">
+      {searchTargets.map((workspace) => {
+        const workspaceId = String(workspace._id);
+        const isExpanded = expandedWorkspaceIds.includes(workspaceId);
+        const tables: any[] = workspace.tables ?? [];
+        const totalNotes = tables.reduce(
+          (acc: number, t: any) => acc + (t.notes?.length ?? 0),
+          0,
+        );
+
+        return (
+          <div key={workspace._id} className="overflow-hidden rounded-lg">
+            {/* Workspace row */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-full flex-1 justify-start gap-2 px-2 text-sm font-medium border-0 border-primary/10 hover:border-2 hover:bg-transparent"
+              onClick={() => toggleWorkspace(workspaceId)}
+            >
+              <ChevronRight
+                className={cn(
+                  "h-3.5 w-3.5 shrink-0 transition-transform text-primary/60",
+                  isExpanded && "rotate-90",
+                )}
+              />
+              {isExpanded ? (
+                <FolderOpen className="h-3.5 w-3.5 shrink-0 text-primary/80" />
+              ) : (
+                <Folder className="h-3.5 w-3.5 shrink-0 text-primary/60" />
+              )}
+              <span className="truncate text-sm font-medium text-foreground">
+                <HighlightedText
+                  text={workspace.name || "Untitled"}
+                  query={query}
+                />
+              </span>
+              <span className="ml-auto text-[10px] text-muted-foreground/50 font-normal pr-1">
+                {totalNotes} {totalNotes === 1 ? "note" : "notes"}
+              </span>
+            </Button>
+
+            {/* Tables + notes */}
+            {isExpanded && (
+              <div className="space-y-0.5 px-1 py-1">
+                {tables.length === 0 ? (
+                  <p className="text-xs text-muted-foreground/50 text-center py-3">
+                    No tables in this workspace yet.
+                  </p>
+                ) : (
+                  tables.map((table: any) => {
+                    const tableNotes: any[] = table.notes ?? [];
+                    return (
+                      <div key={table._id}>
+                        {/* Table label */}
+                        <div className="flex items-center gap-2 px-3 py-1.5">
+                          <span className="ml-4 h-px w-3 bg-muted-foreground/40 shrink-0" />
+                          <span className="truncate text-[12px] font-medium text-muted-foreground">
+                            <HighlightedText
+                              text={table.name || "Untitled"}
+                              query={query}
+                            />
+                          </span>
+                          <span className="ml-auto text-[10px] text-muted-foreground/40">
+                            {tableNotes.length}
+                          </span>
+                        </div>
+                        {/* Notes */}
+                        {tableNotes.length === 0 ? (
+                          <p className="text-[11px] text-muted-foreground/40 text-center py-2 ml-10">
+                            No notes here.
+                          </p>
+                        ) : (
+                          tableNotes.map((note: any) => (
+                            <NoteItem
+                              key={note._id}
+                              note={{
+                                ...note,
+                                workingSpaceName: workspace.name,
+                                tableName: table.name,
+                              }}
+                              onClick={() => onNoteClick(note)}
+                              isSelected={selectedNoteId === String(note._id)}
+                              query={query}
+                              onIntentPrefetch={onIntentPrefetch}
+                              indented
+                            />
+                          ))
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Main component
 
 export default function SearchDialog({
   variant = "SidebarMenuButton",
@@ -154,8 +271,16 @@ export default function SearchDialog({
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [expandedWorkspaceIds, setExpandedWorkspaceIds] = useState<string[]>(
+    [],
+  );
   const router = useRouter();
   const prefetchedRef = useRef<Set<string>>(new Set());
+  const inputRef = useRef<HTMLInputElement>(null);
+  const resultsScrollRef = useRef<HTMLDivElement>(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [canScroll, setCanScroll] = useState(false);
+  const [hasMoreBelow, setHasMoreBelow] = useState(false);
 
   const prefetchOnce = useCallback(
     (href: string) => {
@@ -165,14 +290,34 @@ export default function SearchDialog({
     },
     [router],
   );
-  const inputRef = useRef<HTMLInputElement>(null);
-  const resultsScrollRef = useRef<HTMLDivElement>(null);
-  const [scrollTop, setScrollTop] = useState(0);
-  const [canScroll, setCanScroll] = useState(false);
-  const [hasMoreBelow, setHasMoreBelow] = useState(false);
 
-  // useCallback so the same reference can be used both as the onScroll
-  // handler and called manually whenever content changes
+  // 300ms debounce
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // fully non-matching workspaces are dropped entirely.
+  const searchTargets = useQuery(api.notes.getWorkspaceTree, {
+    searchQuery: debouncedQuery || undefined,
+  }) as any[] | undefined;
+
+  // Flatten notes for keyboard navigation
+  const allNotes = useMemo<any[]>(() => {
+    if (!searchTargets) return [];
+    return searchTargets.flatMap((ws) =>
+      (ws.tables ?? []).flatMap((t: any) =>
+        (t.notes ?? []).map((n: any) => ({
+          ...n,
+          workingSpaceName: ws.name,
+          tableName: t.name,
+        })),
+      ),
+    );
+  }, [searchTargets]);
+
+  const hasResults = (searchTargets?.length ?? 0) > 0;
+
   const handleResultsScroll = useCallback(() => {
     const el = resultsScrollRef.current;
     if (!el) return;
@@ -184,30 +329,22 @@ export default function SearchDialog({
     );
   }, []);
 
-  // Debounce the search query
+  // Reset on open
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.notes.getNoteByUserId,
-    { searchQuery: debouncedQuery || undefined },
-    { initialNumItems: 12 },
-  );
-
-  // Reset when dialog opens
-  useEffect(() => {
-    if (open) {
-      setQuery("");
-      setDebouncedQuery("");
-      setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
+    if (!open) return;
+    setQuery("");
+    setDebouncedQuery("");
+    setSelectedIndex(0);
+    setTimeout(() => inputRef.current?.focus(), 0);
   }, [open]);
 
+  // Always expand all workspaces in the result (search already trimmed them)
+  useEffect(() => {
+    if (!searchTargets) return;
+    setExpandedWorkspaceIds(searchTargets.map((ws) => String(ws._id)));
+  }, [searchTargets]);
+
+  // Ctrl/Cmd + K
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -220,23 +357,33 @@ export default function SearchDialog({
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const filteredNotes = results || [];
+  useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(handleResultsScroll, 50);
+    return () => clearTimeout(timer);
+  }, [open, handleResultsScroll]);
 
-  const groupedNotes = useMemo(() => {
-    return groupNotesByTime(filteredNotes);
-  }, [filteredNotes]);
+  useEffect(() => {
+    const raf = requestAnimationFrame(handleResultsScroll);
+    return () => cancelAnimationFrame(raf);
+  }, [handleResultsScroll, allNotes.length]);
 
-  const allNotes = useMemo(() => {
-    return [
-      ...groupedNotes.today,
-      ...groupedNotes.yesterday,
-      ...groupedNotes.pastWeek,
-      ...groupedNotes.pastMonth,
-      ...groupedNotes.older,
-    ];
-  }, [groupedNotes]);
+  useEffect(() => {
+    if (!open) return;
+    const note = allNotes[selectedIndex];
+    if (!note) return;
+    prefetchOnce(`/home/${note.workingSpaceId}/${note.slug}?id=${note._id}`);
+  }, [open, allNotes, selectedIndex, prefetchOnce]);
 
-  const handleItemClick = (note: any) => {
+  const toggleWorkspace = (workspaceId: string) => {
+    setExpandedWorkspaceIds((prev) =>
+      prev.includes(workspaceId)
+        ? prev.filter((id) => id !== workspaceId)
+        : [...prev, workspaceId],
+    );
+  };
+
+  const handleNoteClick = (note: any) => {
     setOpen(false);
     router.push(`/home/${note.workingSpaceId}/${note.slug}?id=${note._id}`);
   };
@@ -250,33 +397,13 @@ export default function SearchDialog({
       setSelectedIndex((prev) => Math.max(prev - 1, 0));
     } else if (e.key === "Enter" && allNotes[selectedIndex]) {
       e.preventDefault();
-      handleItemClick(allNotes[selectedIndex]);
+      handleNoteClick(allNotes[selectedIndex]);
     }
   };
 
   const isDebouncing = query !== debouncedQuery;
-  const hasResults = allNotes.length > 0;
-  const isLoading = isDebouncing || status === "LoadingFirstPage";
+  const isLoading = isDebouncing || searchTargets === undefined;
 
-  // Prefetch the currently selected item so Enter navigation feels instant.
-  useEffect(() => {
-    if (!open) return;
-    const note = allNotes[selectedIndex];
-    if (!note) return;
-    prefetchOnce(`/home/${note.workingSpaceId}/${note.slug}?id=${note._id}`);
-  }, [open, allNotes, selectedIndex, prefetchOnce]);
-  // When dialog opens, wait for animation then measure
-  useEffect(() => {
-    if (!open) return;
-    const timer = setTimeout(handleResultsScroll, 50); // wait for dialog animation
-    return () => clearTimeout(timer);
-  }, [open, handleResultsScroll]);
-
-  // Re-measure when results change
-  useEffect(() => {
-    const raf = requestAnimationFrame(handleResultsScroll);
-    return () => cancelAnimationFrame(raf);
-  }, [handleResultsScroll, filteredNotes.length, isLoading]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -301,12 +428,14 @@ export default function SearchDialog({
           )}
         </Button>
       </DialogTrigger>
+
       <DialogContent
         aria-describedby={undefined}
-        className="p-0 overflow-hidden bg-card border-border md:min-w-[900px] gap-0 shadow-2xl"
+        className="p-0 overflow-hidden bg-card border-border md:min-w-[850px] gap-0 shadow-2xl"
       >
         <DialogTitle className="sr-only">Search Notes</DialogTitle>
-        {/* Search Input */}
+
+        {/* Search input */}
         <div className="flex items-center border-b border-border px-4 py-2">
           {isDebouncing ? (
             <LoadingAnimation className="h-4 w-4 mr-3 text-primary/70 shrink-0" />
@@ -315,7 +444,7 @@ export default function SearchDialog({
           )}
           <Input
             ref={inputRef}
-            placeholder="Search for notes by title..."
+            placeholder="Search workspaces, tables and notes..."
             className="flex-1 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none px-0 text-sm bg-transparent"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -341,11 +470,12 @@ export default function SearchDialog({
               aria-hidden
             />
           )}
+
           {isLoading ? (
             <SearchLoadingSkeleton />
           ) : !hasResults ? (
             <div className="py-16 text-center text-sm text-muted-foreground">
-              {!query ? (
+              {!debouncedQuery ? (
                 <>
                   <FileText className="mx-auto h-12 w-12 opacity-50 mb-3 text-primary" />
                   <p className="font-medium">No notes found</p>
@@ -356,7 +486,9 @@ export default function SearchDialog({
               ) : (
                 <>
                   <Search className="mx-auto h-12 w-12 opacity-50 text-primary mb-3" />
-                  <p className="font-medium">No results found for "{query}"</p>
+                  <p className="font-medium">
+                    No results found for &quot;{debouncedQuery}&quot;
+                  </p>
                   <p className="text-xs mt-1">
                     Try different keywords or check your spelling
                   </p>
@@ -364,124 +496,45 @@ export default function SearchDialog({
               )}
             </div>
           ) : (
-            <div className="space-y-2">
-              {groupedNotes.today.length > 0 && (
-                <div className="mb-4">
-                  <div className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary/60">
-                    Today
-                  </div>
-                  {groupedNotes.today.map((note) => (
-                    <NoteItem
-                      key={note._id}
-                      note={note}
-                      onClick={() => handleItemClick(note)}
-                      isSelected={allNotes.indexOf(note) === selectedIndex}
-                      query={debouncedQuery}
-                      onIntentPrefetch={prefetchOnce}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {groupedNotes.yesterday.length > 0 && (
-                <div className="mb-4">
-                  <div className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary/60">
-                    Yesterday
-                  </div>
-                  {groupedNotes.yesterday.map((note) => (
-                    <NoteItem
-                      key={note._id}
-                      note={note}
-                      onClick={() => handleItemClick(note)}
-                      isSelected={allNotes.indexOf(note) === selectedIndex}
-                      query={debouncedQuery}
-                      onIntentPrefetch={prefetchOnce}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {groupedNotes.pastWeek.length > 0 && (
-                <div className="mb-4">
-                  <div className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary/60">
-                    Past Week
-                  </div>
-                  {groupedNotes.pastWeek.map((note) => (
-                    <NoteItem
-                      key={note._id}
-                      note={note}
-                      onClick={() => handleItemClick(note)}
-                      isSelected={allNotes.indexOf(note) === selectedIndex}
-                      query={debouncedQuery}
-                      onIntentPrefetch={prefetchOnce}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {groupedNotes.pastMonth.length > 0 && (
-                <div className="mb-4">
-                  <div className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary/60">
-                    Past 30 Days
-                  </div>
-                  {groupedNotes.pastMonth.map((note) => (
-                    <NoteItem
-                      key={note._id}
-                      note={note}
-                      onClick={() => handleItemClick(note)}
-                      isSelected={allNotes.indexOf(note) === selectedIndex}
-                      query={debouncedQuery}
-                      onIntentPrefetch={prefetchOnce}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {groupedNotes.older.length > 0 && (
-                <div className="mb-4">
-                  <div className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary/60">
-                    Older
-                  </div>
-                  {groupedNotes.older.map((note) => (
-                    <NoteItem
-                      key={note._id}
-                      note={note}
-                      onClick={() => handleItemClick(note)}
-                      isSelected={allNotes.indexOf(note) === selectedIndex}
-                      query={debouncedQuery}
-                      onIntentPrefetch={prefetchOnce}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            // Same tree for both idle and search — backend already filtered it
+            <WorkspaceTree
+              searchTargets={searchTargets!}
+              expandedWorkspaceIds={expandedWorkspaceIds}
+              toggleWorkspace={toggleWorkspace}
+              onNoteClick={handleNoteClick}
+              selectedNoteId={
+                allNotes[selectedIndex]
+                  ? String(allNotes[selectedIndex]._id)
+                  : undefined
+              }
+              query={debouncedQuery}
+              onIntentPrefetch={prefetchOnce}
+            />
           )}
         </div>
 
         {/* Footer */}
-        <DialogFooter className="border-t border-border px-4 py-2.5 bg-secondary/20">
-          <div className=" w-full flex justify-between items-center">
-            <span className=" flex justify-center items-center gap-2 space-x-2">
-              <span className=" flex justify-center items-center gap-2">
+        <DialogFooter className="border-t border-border px-4 py-2.5 bg-muted">
+          <div className="w-full flex justify-between items-center">
+            <span className="flex justify-center items-center gap-2 space-x-2">
+              <span className="flex justify-center items-center gap-2">
                 <kbd className="pointer-events-none border border-primary/20 inline-flex h-6 select-none items-center gap-1.5 rounded-md bg-muted px-2 font-mono text-[11px] font-medium text-primary/80">
                   <ArrowDownUp size={14} />
                 </kbd>
-                <p className=" text-foreground font-mono text-xs">Navigate</p>
+                <p className="text-foreground font-mono text-xs">Navigate</p>
               </span>
-              <span className=" flex justify-center items-center gap-2">
+              <span className="flex justify-center items-center gap-2">
                 <kbd className="pointer-events-none border border-primary/20 inline-flex h-6 select-none items-center gap-1.5 rounded-md bg-muted px-2 font-mono text-[11px] font-medium text-primary/80">
                   <Undo2 size={14} />
                 </kbd>
-                <p className=" text-foreground font-mono text-xs">Open</p>
+                <p className="text-foreground font-mono text-xs">Open</p>
               </span>
             </span>
-            <span>
-              <span className=" flex justify-center items-center gap-2">
-                <kbd className="pointer-events-none border border-primary/20 inline-flex h-6 select-none items-center gap-1.5 rounded-md bg-muted px-2 font-mono text-[11px] font-medium text-primary/80">
-                  ESC
-                </kbd>
-                <p className=" text-foreground font-mono text-xs">Close</p>
-              </span>
+            <span className="flex justify-center items-center gap-2">
+              <kbd className="pointer-events-none border border-primary/20 inline-flex h-6 select-none items-center gap-1.5 rounded-md bg-muted px-2 font-mono text-[11px] font-medium text-primary/80">
+                ESC
+              </kbd>
+              <p className="text-foreground font-mono text-xs">Close</p>
             </span>
           </div>
         </DialogFooter>

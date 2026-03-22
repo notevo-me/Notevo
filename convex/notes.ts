@@ -3,7 +3,10 @@ import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { generateSlug } from "../lib/generateSlug";
 import { paginationOptsValidator } from "convex/server";
-import { extractTextFromTiptap, truncateText } from "../lib/parse-tiptap-content";
+import {
+  extractTextFromTiptap,
+  truncateText,
+} from "../lib/parse-tiptap-content";
 
 const NOTE_PREVIEW_MAX_CHARS = 200;
 
@@ -402,7 +405,7 @@ export const getFavNotes = query({
   },
 });
 
-export const getMoveTargets = query({
+export const getWorkspaceTree = query({
   args: {
     searchQuery: v.optional(v.string()),
   },
@@ -413,6 +416,7 @@ export const getMoveTargets = query({
     }
 
     const normalizedQuery = searchQuery?.trim().toLowerCase() ?? "";
+
     const workspaces = await ctx.db
       .query("workingSpaces")
       .withIndex("by_userId", (q) => q.eq("userId", userId))
@@ -429,35 +433,60 @@ export const getMoveTargets = query({
           .collect();
 
         const sortedTables = tables.sort((a, b) => b.updatedAt - a.updatedAt);
-        if (!normalizedQuery) {
-          return {
-            ...workspace,
-            tables: sortedTables,
-          };
-        }
 
-        const workspaceMatches =
-          workspace.name.toLowerCase().includes(normalizedQuery) ||
-          workspace.slug?.toLowerCase().includes(normalizedQuery);
-        const matchingTables = sortedTables.filter(
-          (table) =>
-            table.name?.toLowerCase().includes(normalizedQuery) ||
-            table.slug?.toLowerCase().includes(normalizedQuery),
+        // Fetch notes for every table (strip heavy body field)
+        const tablesWithNotes = await Promise.all(
+          sortedTables.map(async (table) => {
+            const notes = await ctx.db
+              .query("notes")
+              .withIndex("by_notesTableId", (q) =>
+                q.eq("notesTableId", table._id),
+              )
+              .order("desc")
+              .collect();
+
+            const lightNotes = notes.map(({ body, ...rest }) => rest);
+            return { ...table, notes: lightNotes };
+          }),
         );
 
-        if (!workspaceMatches && matchingTables.length === 0) {
-          return null;
+        // No query — return everything
+        if (!normalizedQuery) {
+          return { ...workspace, tables: tablesWithNotes };
         }
+
+        // Filter by workspace name, table name, or note title
+        const workspaceMatches = workspace.name
+          .toLowerCase()
+          .includes(normalizedQuery);
+
+        const filteredTables = tablesWithNotes
+          .map((table) => {
+            const tableMatches = table.name
+              ?.toLowerCase()
+              .includes(normalizedQuery);
+
+            const matchingNotes = table.notes.filter((note: any) =>
+              note.title?.toLowerCase().includes(normalizedQuery),
+            );
+
+            if (workspaceMatches) return table;
+            if (tableMatches) return table;
+            if (matchingNotes.length > 0)
+              return { ...table, notes: matchingNotes };
+            return null;
+          })
+          .filter(Boolean);
+
+        if (!workspaceMatches && filteredTables.length === 0) return null;
 
         return {
           ...workspace,
-          tables: workspaceMatches ? sortedTables : matchingTables,
+          tables: workspaceMatches ? tablesWithNotes : filteredTables,
         };
       }),
     );
 
-    return targets.filter((target): target is NonNullable<typeof target> =>
-      Boolean(target),
-    );
+    return targets.filter(Boolean) as NonNullable<(typeof targets)[number]>[];
   },
 });
