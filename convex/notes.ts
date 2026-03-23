@@ -459,8 +459,6 @@ export const getWorkspaceTree = query({
           .toLowerCase()
           .includes(normalizedQuery);
 
-        // Always filter tables to only those that have something relevant.
-        // also contain the query string so the user sees exactly what matched.
         const filteredTables = tablesWithNotes
           .map((table) => {
             const tableMatches = table.name
@@ -471,33 +469,28 @@ export const getWorkspaceTree = query({
               note.title?.toLowerCase().includes(normalizedQuery),
             );
 
-            // Table name matches → show the table with only its matching notes
-            // (if no notes match, show the table with an empty notes array so
-            //  the table itself is still visible as a match)
             if (tableMatches) {
-              return {
-                ...table,
-                notes: matchingNotes.length > 0 ? matchingNotes : [],
-              };
+              // Table name matched → show ALL its notes, the table is the result
+              return table;
             }
 
-            // Table name doesn't match but some notes do → show only those notes
             if (matchingNotes.length > 0) {
+              // Only some notes matched → show only those notes
               return { ...table, notes: matchingNotes };
             }
 
             // Nothing in this table matches
-            // If the workspace itself matched, still skip empty tables
             return null;
           })
           .filter(Boolean);
 
-        // Show the workspace if its name matched AND it has any tables,
-        // OR if any of its tables/notes matched
-        if (!workspaceMatches && filteredTables.length === 0) return null;
+        // Workspace name matches but no tables/notes contain the query →
+        // show the workspace with no tables so it's still visible as a result
         if (workspaceMatches && filteredTables.length === 0) {
           return { ...workspace, tables: [] };
         }
+
+        if (!workspaceMatches && filteredTables.length === 0) return null;
 
         return { ...workspace, tables: filteredTables };
       }),
