@@ -338,10 +338,14 @@ export default function SearchDialog({
     setTimeout(() => inputRef.current?.focus(), 0);
   }, [open]);
 
-  // Always expand all workspaces in the result (search already trimmed them)
+  // Only auto-expand workspaces that actually have tables inside them
   useEffect(() => {
     if (!searchTargets) return;
-    setExpandedWorkspaceIds(searchTargets.map((ws) => String(ws._id)));
+    setExpandedWorkspaceIds(
+      searchTargets
+        .filter((ws) => (ws.tables?.length ?? 0) > 0)
+        .map((ws) => String(ws._id)),
+    );
   }, [searchTargets]);
 
   // Ctrl/Cmd + K
