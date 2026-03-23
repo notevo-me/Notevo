@@ -40,7 +40,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getContentPreview } from "@/lib/getContentPreview";
 import { cn } from "@/lib/utils";
 
-// ─── Zod Schemas ───────────────────────────────────────────────────────────────
+// ─── Zod Schemas
 
 const workspaceNameSchema = z
   .string()
@@ -64,7 +64,7 @@ const workspacePageMemoryCache = new Map<
 
 const tableNotesMemoryCache = new Map<string, any[]>();
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
+// ─── Types
 
 type ViewMode = "grid" | "list";
 
@@ -119,7 +119,7 @@ const STORAGE_KEYS = {
   ACTIVE_TABLE: "notevo_active_table",
 };
 
-// ─── Table Tab ─────────────────────────────────────────────────────────────────
+// ─── Table Tab
 
 function TableTab({ table }: { table: any }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -241,7 +241,7 @@ function TableTab({ table }: { table: any }) {
     <TabsTrigger
       value={table._id}
       data-tab-id={table._id}
-      className="group/tab px-4 py-2.5 rounded-lg whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+      className=" relative group/tab px-6 py-2.5 rounded-lg whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
       onDoubleClick={handleDoubleClick}
       title="Double-click to rename"
     >
@@ -252,7 +252,7 @@ function TableTab({ table }: { table: any }) {
           e.stopPropagation();
           handleDoubleClick(e as any);
         }}
-        className="opacity-0 group-hover/tab:opacity-60 hover:!opacity-100 transition-opacity duration-150 text-muted-foreground hover:text-foreground"
+        className=" absolute top-0.5 right-0.5 opacity-0 group-hover/tab:opacity-100 hover:!opacity-100 transition-opacity duration-150 p-0.5 rounded-full text-secondary-foreground hover:text-foreground"
         title="Rename"
       >
         <Pencil className="h-3 w-3" />
@@ -261,7 +261,7 @@ function TableTab({ table }: { table: any }) {
   );
 }
 
-// ─── Slider Tab List ───────────────────────────────────────────────────────────
+// ─── Slider Tab List
 
 interface SliderTabsListProps {
   tables: any[];
@@ -406,7 +406,7 @@ function SliderTabsList({
   );
 }
 
-// ─── Main Page ─────────────────────────────────────────────────────────────────
+// ─── Main Page
 
 export default function WorkingSpacePageClient({
   workingSpaceId,
@@ -516,7 +516,6 @@ export default function WorkingSpacePageClient({
     },
     [workspace?.name],
   );
-  // -------------------------------------------------------------------------
 
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     if (typeof window !== "undefined") {
@@ -705,7 +704,7 @@ export default function WorkingSpacePageClient({
   );
 }
 
-// ─── Notes Container ───────────────────────────────────────────────────────────
+// ─── Notes Container
 
 export function NotesDroppableContainer({
   tableId,
