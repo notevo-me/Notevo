@@ -9,7 +9,7 @@ import {
 } from "../lib/parse-tiptap-content";
 
 const NOTE_PREVIEW_MAX_CHARS = 200;
-
+const TREE_NOTES_PER_TABLE = 3;
 function computeNotePreview(body: string | undefined): string | undefined {
   if (!body) return undefined;
   const text = extractTextFromTiptap(body).replace(/\s+/g, " ").trim();
@@ -416,6 +416,7 @@ export const getWorkspaceTree = query({
     }
 
     const normalizedQuery = searchQuery?.trim().toLowerCase() ?? "";
+    const isSearching = normalizedQuery.length > 0;
 
     const workspaces = await ctx.db
       .query("workingSpaces")
@@ -434,10 +435,9 @@ export const getWorkspaceTree = query({
 
         const sortedTables = tables.sort((a, b) => b.updatedAt - a.updatedAt);
 
-        // Fetch notes for every table (strip heavy body field)
         const tablesWithNotes = await Promise.all(
           sortedTables.map(async (table) => {
-            const notes = await ctx.db
+            const allNotes = await ctx.db
               .query("notes")
               .withIndex("by_notesTableId", (q) =>
                 q.eq("notesTableId", table._id),
@@ -445,16 +445,32 @@ export const getWorkspaceTree = query({
               .order("desc")
               .collect();
 
-            const lightNotes = notes.map(({ body, ...rest }) => rest);
-            return { ...table, notes: lightNotes };
+            const lightNotes = allNotes.map(({ body, ...rest }) => rest);
+
+            if (isSearching) {
+              // When searching — return all notes unsliced, filtering happens below
+              return {
+                ...table,
+                notes: lightNotes,
+                totalNotes: lightNotes.length,
+              };
+            }
+
+            // Initial load — only return first N notes to keep payload small
+            return {
+              ...table,
+              notes: lightNotes.slice(0, TREE_NOTES_PER_TABLE),
+              totalNotes: lightNotes.length,
+            };
           }),
         );
 
-        // No query — return everything as-is
-        if (!normalizedQuery) {
+        // No query — return everything (paginated)
+        if (!isSearching) {
           return { ...workspace, tables: tablesWithNotes };
         }
 
+        // Searching — filter tree to only matching branches
         const workspaceMatches = workspace.name
           .toLowerCase()
           .includes(normalizedQuery);
@@ -470,22 +486,22 @@ export const getWorkspaceTree = query({
             );
 
             if (tableMatches) {
-              // Table name matched → show ALL its notes, the table is the result
+              // Table name matched — show all its notes (no slicing when searching)
               return table;
             }
 
             if (matchingNotes.length > 0) {
-              // Only some notes matched → show only those notes
-              return { ...table, notes: matchingNotes };
+              return {
+                ...table,
+                notes: matchingNotes,
+                totalNotes: matchingNotes.length,
+              };
             }
 
-            // Nothing in this table matches
             return null;
           })
           .filter(Boolean);
 
-        // Workspace name matches but no tables/notes contain the query →
-        // show the workspace with no tables so it's still visible as a result
         if (workspaceMatches && filteredTables.length === 0) {
           return { ...workspace, tables: [] };
         }
