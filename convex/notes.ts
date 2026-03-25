@@ -10,6 +10,8 @@ import {
 
 const NOTE_PREVIEW_MAX_CHARS = 200;
 const TREE_NOTES_PER_TABLE = 3;
+const TREE_TABLES_PER_WORKSPACE = 3;
+
 function computeNotePreview(body: string | undefined): string | undefined {
   if (!body) return undefined;
   const text = extractTextFromTiptap(body).replace(/\s+/g, " ").trim();
@@ -426,51 +428,59 @@ export const getWorkspaceTree = query({
 
     const targets = await Promise.all(
       workspaces.map(async (workspace) => {
-        const tables = await ctx.db
+        const allTables = await ctx.db
           .query("notesTables")
           .withIndex("by_workingSpaceId", (q) =>
             q.eq("workingSpaceId", workspace._id),
           )
           .collect();
 
-        const sortedTables = tables.sort((a, b) => b.updatedAt - a.updatedAt);
+        const sortedTables = allTables.sort(
+          (a, b) => b.updatedAt - a.updatedAt,
+        );
+
+        // On initial load, limit tables
+        const tablesToProcess = isSearching
+          ? sortedTables
+          : sortedTables.slice(0, TREE_TABLES_PER_WORKSPACE);
 
         const tablesWithNotes = await Promise.all(
-          sortedTables.map(async (table) => {
-            const allNotes = await ctx.db
+          tablesToProcess.map(async (table) => {
+            if (isSearching) {
+              const allNotes = await ctx.db
+                .query("notes")
+                .withIndex("by_notesTableId", (q) =>
+                  q.eq("notesTableId", table._id),
+                )
+                .order("desc")
+                .collect();
+              return {
+                ...table,
+                notes: allNotes.map(({ body, ...rest }) => rest),
+              };
+            }
+
+            // Initial load — .take() stops at DB level
+            const firstNotes = await ctx.db
               .query("notes")
               .withIndex("by_notesTableId", (q) =>
                 q.eq("notesTableId", table._id),
               )
               .order("desc")
-              .collect();
+              .take(TREE_NOTES_PER_TABLE);
 
-            const lightNotes = allNotes.map(({ body, ...rest }) => rest);
-
-            if (isSearching) {
-              // When searching — return all notes unsliced, filtering happens below
-              return {
-                ...table,
-                notes: lightNotes,
-                totalNotes: lightNotes.length,
-              };
-            }
-
-            // Initial load — only return first N notes to keep payload small
             return {
               ...table,
-              notes: lightNotes.slice(0, TREE_NOTES_PER_TABLE),
-              totalNotes: lightNotes.length,
+              notes: firstNotes.map(({ body, ...rest }) => rest),
             };
           }),
         );
 
-        // No query — return everything (paginated)
         if (!isSearching) {
           return { ...workspace, tables: tablesWithNotes };
         }
 
-        // Searching — filter tree to only matching branches
+        // Filter by query
         const workspaceMatches = workspace.name
           .toLowerCase()
           .includes(normalizedQuery);
@@ -480,32 +490,19 @@ export const getWorkspaceTree = query({
             const tableMatches = table.name
               ?.toLowerCase()
               .includes(normalizedQuery);
-
             const matchingNotes = table.notes.filter((note: any) =>
               note.title?.toLowerCase().includes(normalizedQuery),
             );
 
-            if (tableMatches) {
-              // Table name matched — show all its notes (no slicing when searching)
-              return table;
-            }
-
-            if (matchingNotes.length > 0) {
-              return {
-                ...table,
-                notes: matchingNotes,
-                totalNotes: matchingNotes.length,
-              };
-            }
-
+            if (tableMatches) return table;
+            if (matchingNotes.length > 0)
+              return { ...table, notes: matchingNotes };
             return null;
           })
           .filter(Boolean);
 
-        if (workspaceMatches && filteredTables.length === 0) {
+        if (workspaceMatches && filteredTables.length === 0)
           return { ...workspace, tables: [] };
-        }
-
         if (!workspaceMatches && filteredTables.length === 0) return null;
 
         return { ...workspace, tables: filteredTables };
