@@ -35,8 +35,6 @@ interface SearchDialogProps {
   sidbarMobile?: boolean;
 }
 
-// ─── Time helper
-
 const getRelativeTime = (date: Date) => {
   const now = new Date();
   const diffInDays = Math.floor(
@@ -48,8 +46,6 @@ const getRelativeTime = (date: Date) => {
   if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
   return `${Math.floor(diffInDays / 30)} months ago`;
 };
-
-// ─── Sub-components
 
 function SearchLoadingSkeleton() {
   return (
@@ -100,8 +96,8 @@ function NoteItem({
       onFocus={() => onIntentPrefetch?.(href)}
       onTouchStart={() => onIntentPrefetch?.(href)}
       className={cn(
-        "flex items-center gap-3 py-2.5 px-3 cursor-pointer rounded-lg transition-all",
-        indented && "ml-6",
+        "flex items-center gap-3 mb-px py-1.5 px-2 cursor-pointer rounded-lg transition-all",
+        indented && "ml-7",
         isSelected ? "bg-primary/10" : "hover:bg-primary/10",
       )}
     >
@@ -110,7 +106,7 @@ function NoteItem({
           "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-colors",
           isSelected
             ? "border-primary/30 bg-primary/10 text-primary"
-            : "border-border bg-muted text-muted-foreground",
+            : "border-muted-foreground/30 bg-muted text-muted-foreground",
         )}
       >
         <FileText size={14} />
@@ -137,7 +133,74 @@ function NoteItem({
     </div>
   );
 }
-// ─── Hierarchical WorkspaceTree
+
+// Tables are now collapsible — each manages its own open/close state
+function TableSection({
+  table,
+  workspace,
+  selectedNoteId,
+  query,
+  onNoteClick,
+  onIntentPrefetch,
+}: any) {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const notes: any[] = table.notes ?? [];
+
+  return (
+    <div>
+      <Button
+        onClick={() => setIsExpanded((v) => !v)}
+        variant="ghost"
+        className="h-7 w-full flex-1 justify-start gap-2 px-4 mb-px text-sm font-medium border-0 border-transparent hover:border-2 hover:bg-transparent"
+      >
+        <ChevronRight
+          className={cn(
+            "h-3 w-3 shrink-0 transition-transform text-muted-foreground/50 group-hover:text-primary/60",
+            isExpanded && "rotate-90",
+          )}
+        />
+        {isExpanded ? (
+          <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
+        ) : (
+          <Folder className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        )}
+        <span className="truncate text-[12px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+          <HighlightedText text={table.name || "Untitled"} query={query} />
+        </span>
+        <span className="ml-auto text-[10px] text-muted-foreground/40 pr-1">
+          {notes.length}
+        </span>
+      </Button>
+
+      {isExpanded && (
+        <div className=" relative ">
+          <div className=" ml-5 absolute top-0 left-0 h-full w-px bg-muted-foreground/30" />
+          {notes.length === 0 ? (
+            <p className="text-[11px] text-muted-foreground/40 text-center py-2 ml-6">
+              {query ? `No notes match "${query}" here.` : "No notes here."}
+            </p>
+          ) : (
+            notes.map((note: any) => (
+              <NoteItem
+                key={note._id}
+                note={{
+                  ...note,
+                  workingSpaceName: workspace.name,
+                  tableName: table.name,
+                }}
+                onClick={() => onNoteClick(note)}
+                isSelected={selectedNoteId === String(note._id)}
+                query={query}
+                onIntentPrefetch={onIntentPrefetch}
+                indented
+              />
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function WorkspaceTree({
   searchTargets,
@@ -169,7 +232,6 @@ function WorkspaceTree({
 
         return (
           <div key={workspace._id} className="overflow-hidden rounded-lg">
-            {/* Workspace row */}
             <Button
               variant="ghost"
               size="sm"
@@ -198,7 +260,6 @@ function WorkspaceTree({
               </span>
             </Button>
 
-            {/* Tables + notes */}
             {isExpanded && (
               <div className="space-y-0.5 px-1 py-1">
                 {tables.length === 0 ? (
@@ -206,48 +267,17 @@ function WorkspaceTree({
                     No tables in this workspace yet.
                   </p>
                 ) : (
-                  tables.map((table: any) => {
-                    const tableNotes: any[] = table.notes ?? [];
-                    return (
-                      <div key={table._id}>
-                        {/* Table label */}
-                        <div className="flex items-center gap-2 px-3 py-1.5">
-                          <span className="ml-4 h-px w-3 bg-muted-foreground/40 shrink-0" />
-                          <span className="truncate text-[12px] font-medium text-muted-foreground">
-                            <HighlightedText
-                              text={table.name || "Untitled"}
-                              query={query}
-                            />
-                          </span>
-                          <span className="ml-auto text-[10px] text-muted-foreground/40">
-                            {tableNotes.length}
-                          </span>
-                        </div>
-                        {/* Notes */}
-                        {tableNotes.length === 0 ? (
-                          <p className="text-[11px] text-muted-foreground/40 text-center py-2 ml-10">
-                            No notes here.
-                          </p>
-                        ) : (
-                          tableNotes.map((note: any) => (
-                            <NoteItem
-                              key={note._id}
-                              note={{
-                                ...note,
-                                workingSpaceName: workspace.name,
-                                tableName: table.name,
-                              }}
-                              onClick={() => onNoteClick(note)}
-                              isSelected={selectedNoteId === String(note._id)}
-                              query={query}
-                              onIntentPrefetch={onIntentPrefetch}
-                              indented
-                            />
-                          ))
-                        )}
-                      </div>
-                    );
-                  })
+                  tables.map((table: any) => (
+                    <TableSection
+                      key={table._id}
+                      table={table}
+                      workspace={workspace}
+                      selectedNoteId={selectedNoteId}
+                      query={query}
+                      onNoteClick={onNoteClick}
+                      onIntentPrefetch={onIntentPrefetch}
+                    />
+                  ))
                 )}
               </div>
             )}
@@ -257,8 +287,6 @@ function WorkspaceTree({
     </div>
   );
 }
-
-// ─── Main component
 
 export default function SearchDialog({
   variant = "SidebarMenuButton",
@@ -291,18 +319,15 @@ export default function SearchDialog({
     [router],
   );
 
-  // 300ms debounce
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query), 300);
     return () => clearTimeout(timer);
   }, [query]);
 
-  // fully non-matching workspaces are dropped entirely.
   const searchTargets = useQuery(api.notes.getWorkspaceTree, {
     searchQuery: debouncedQuery || undefined,
   }) as any[] | undefined;
 
-  // Flatten notes for keyboard navigation
   const allNotes = useMemo<any[]>(() => {
     if (!searchTargets) return [];
     return searchTargets.flatMap((ws) =>
@@ -329,7 +354,6 @@ export default function SearchDialog({
     );
   }, []);
 
-  // Reset on open
   useEffect(() => {
     if (!open) return;
     setQuery("");
@@ -338,7 +362,6 @@ export default function SearchDialog({
     setTimeout(() => inputRef.current?.focus(), 0);
   }, [open]);
 
-  // Only auto-expand workspaces that actually have tables inside them
   useEffect(() => {
     if (!searchTargets) return;
     setExpandedWorkspaceIds(
@@ -348,7 +371,6 @@ export default function SearchDialog({
     );
   }, [searchTargets]);
 
-  // Ctrl/Cmd + K
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -439,7 +461,6 @@ export default function SearchDialog({
       >
         <DialogTitle className="sr-only">Search Notes</DialogTitle>
 
-        {/* Search input */}
         <div className="flex items-center border-b border-border px-4 py-2">
           {isDebouncing ? (
             <LoadingAnimation className="h-4 w-4 mr-3 text-primary/70 shrink-0" />
@@ -456,7 +477,6 @@ export default function SearchDialog({
           />
         </div>
 
-        {/* Results */}
         <div
           ref={resultsScrollRef}
           onScroll={handleResultsScroll}
@@ -500,7 +520,6 @@ export default function SearchDialog({
               )}
             </div>
           ) : (
-            // Same tree for both idle and search — backend already filtered it
             <WorkspaceTree
               searchTargets={searchTargets!}
               expandedWorkspaceIds={expandedWorkspaceIds}
@@ -517,7 +536,6 @@ export default function SearchDialog({
           )}
         </div>
 
-        {/* Footer */}
         <DialogFooter className="border-t border-border px-4 py-2.5 bg-muted">
           <div className="w-full flex justify-between items-center">
             <span className="flex justify-center items-center gap-2 space-x-2">
