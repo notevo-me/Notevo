@@ -54,52 +54,6 @@ export const HowToStartSteps = [
   },
 ] as const;
 
-export const poweredBy = [
-  {
-    icon: BsStars,
-    brannedName: "Novel",
-  },
-  {
-    icon: IoLogoVercel,
-    brannedName: "Vercel AI SDK",
-  },
-] as const;
-
-export const testimonials1 = [
-  {
-    quote:
-      "Notevo has completely transformed the way I take and manage notes. The AI interaction feature is a game-changer, making it easy to organize and retrieve information quickly.",
-    name: "Charles Dickens",
-    title: "A Tale of Two Cities",
-  },
-  {
-    quote:
-      "As a student, Notevo has helped me keep my notes organized and easily accessible. The smart search capability is incredibly useful during exam time!",
-    name: "William Shakespeare",
-    title: "Hamlet",
-  },
-] as const;
-export const testimonials2 = [
-  {
-    quote:
-      "I love how intuitive and user-friendly Notevo is. The AI suggestions for organizing my notes have saved me so much time.",
-    name: "Jane Austen",
-    title: "Pride and Prejudice",
-  },
-  {
-    quote:
-      "Notevo has become an indispensable tool for my research projects. The ability to interact with my notes and get relevant insights is amazing.",
-    name: "Herman Melville",
-    title: "Moby-Dick",
-  },
-  {
-    quote:
-      "Notevo's real-time collaboration feature has streamlined our team's workflow. We can all contribute to and edit notes simultaneously, which is a huge productivity boost.",
-    name: "Edgar Allan Poe",
-    title: "A Dream Within a Dream",
-  },
-] as const;
-
 export const pricingPlans = {
   free: {
     name: "Free",
@@ -157,9 +111,9 @@ export const Features = [
     icon: FileDown,
   },
   {
-    title: "Move Your Notes",
+    title: "Move Your Stuff",
     description:
-      "Move your notes around and organize your thoughts, manage your workspace and you know your notes your way .",
+      "Move your notes around and organize your thoughts, manage your workspace and you know your notes your way.",
     icon: FileSymlink,
   },
 ] as const;
