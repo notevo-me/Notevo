@@ -136,7 +136,9 @@ export default function FeaturesSection() {
         <div className="space-y-24">
           {Features.map((feature, index) => {
             const isEven = index % 2 === 0;
-            const { video, poster } = featureVideos[feature.title];
+            const featureMedia = featureVideos[feature.title];
+            if (!featureMedia) return null;
+            const { video, poster } = featureMedia;
             return (
               <motion.div
                 key={index}
