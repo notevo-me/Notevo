@@ -32,7 +32,7 @@ const featureVideos: Record<string, { video: string; poster: string }> = {
     poster:
       "https://res.cloudinary.com/dkbwj5yyg/video/upload/q_80,w_900/v1774031511/notevo-Downloadyoursfuff_zhgjsp.jpg",
   },
-  "Move Your Stuff": {
+  "Move Your Notes": {
     video:
       "https://res.cloudinary.com/dkbwj5yyg/video/upload/q_80,w_900/v1774032857/notevo-moveyourstuff_xyxnhr.mp4",
     poster:
