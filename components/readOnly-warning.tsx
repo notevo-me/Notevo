@@ -9,14 +9,14 @@ export function ReadOnlyWarning() {
   const [showWarning, setShowWarning] = useState(false);
 
   useEffect(() => {
-    const hasSeenWarning = sessionStorage.getItem("ReadOnlySeen");
+    const hasSeenWarning = localStorage.getItem("ReadOnlySeen");
     if (!hasSeenWarning) {
       setShowWarning(true);
     }
   }, []);
 
   const handleDismiss = () => {
-    sessionStorage.setItem("ReadOnlySeen", "true");
+    localStorage.setItem("ReadOnlySeen", "true");
     setShowWarning(false);
   };
 
