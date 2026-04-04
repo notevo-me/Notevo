@@ -18,21 +18,6 @@ import {
 } from "lucide-react";
 import { NOISE_PNG } from "@/lib/data";
 import { useMediaQuery } from "react-responsive";
-const sections = [
-  { id: "liability", label: "Liability", icon: Shield, number: "01" },
-  { id: "account", label: "Account", icon: User, number: "02" },
-  { id: "uptime", label: "Uptime & Security", icon: Server, number: "03" },
-  {
-    id: "copyright",
-    label: "Copyright & Ownership",
-    icon: Copyright,
-    number: "04",
-  },
-  { id: "features", label: "Features & Bugs", icon: Wrench, number: "05" },
-  { id: "ai", label: "AI & Third-Party", icon: Bot, number: "06" },
-  { id: "updates", label: "Updates to Terms", icon: RefreshCw, number: "07" },
-];
-
 function SubSection({
   title,
   children,
