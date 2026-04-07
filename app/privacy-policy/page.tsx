@@ -88,6 +88,7 @@ export default function PrivacyPage() {
           zIndex: 5,
         }}
       />
+    
       <div className="flex-grow">
         <MaxWContainer className="max-w-[760px] mx-auto px-6 pb-44">
           {/* Hero */}
