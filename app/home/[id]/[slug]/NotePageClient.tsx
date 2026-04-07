@@ -14,11 +14,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 const noteMemoryCache = new Map<string, unknown>();
 
-export default function NotePageClient({
-  noteId,
-}: {
-  noteId: Id<"notes">;
-}) {
+export default function NotePageClient({ noteId }: { noteId: Id<"notes"> }) {
   const { noteWidth } = useNoteWidth();
   const note = useQuery(api.notes.getNoteById, { _id: noteId });
   const [lastNote, setLastNote] = useState<typeof note>(() => {
@@ -134,7 +130,12 @@ export default function NotePageClient({
   }
 
   return (
-    <div className={cn(noteWidth === "false" ? "container " : "px-4", "pb-28")}>
+    <div
+      className={cn(
+        noteWidth === "false" ? "w-[900px] " : "px-4",
+        " pb-28 mx-auto",
+      )}
+    >
       <TailwindAdvancedEditor
         editorBubblePlacement={false}
         initialContent={content ?? serverContent}
