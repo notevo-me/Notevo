@@ -1,37 +1,18 @@
-"use client";
-
+import { redirect } from "next/navigation";
 import type { Id } from "@/convex/_generated/dataModel";
 import NotePageClient from "./NotePageClient";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { useConvexAuth } from "convex/react";
 
-export default function NotePage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { isAuthenticated, isLoading } = useConvexAuth();
+export default async function NotePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ id?: string | string[] }>;
+}) {
+  const { id } = await searchParams;
+  const noteId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : null;
 
-  const noteId = useMemo(() => {
-    const id = searchParams.get("id");
-    return (id ?? null) as Id<"notes"> | null;
-  }, [searchParams]);
+  if (!noteId) {
+    redirect("/home");
+  }
 
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isAuthenticated) {
-      router.replace("/signup");
-      router.refresh();
-    }
-  }, [isAuthenticated, isLoading, router]);
-
-  useEffect(() => {
-    if (noteId === null) {
-      router.replace("/home");
-      router.refresh();
-    }
-  }, [noteId, router]);
-
-  if (noteId === null || isLoading || !isAuthenticated) return null;
-
-  return <NotePageClient noteId={noteId} />;
+  return <NotePageClient noteId={noteId as Id<"notes">} />;
 }

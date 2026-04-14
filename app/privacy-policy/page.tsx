@@ -2,20 +2,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import MaxWContainer from "@/components/ui/MaxWContainer";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  Home,
-  Calendar,
-  Shield,
-  Database,
-  Link as LinkIcon,
-  Globe,
-  Cookie,
-  Lock,
-  RefreshCw,
-  FileSymlink,
-} from "lucide-react";
 import { NOISE_PNG } from "@/lib/data";
 import { useMediaQuery } from "react-responsive";
 function SubSection({
@@ -88,7 +74,7 @@ export default function PrivacyPage() {
           zIndex: 5,
         }}
       />
-    
+
       <div className="flex-grow">
         <MaxWContainer className="max-w-[760px] mx-auto px-6 pb-44">
           {/* Hero */}
@@ -266,53 +252,6 @@ export default function PrivacyPage() {
             </SubSection>
           </SectionBlock>
         </MaxWContainer>
-      </div>
-
-      {/* Sticky footer pill */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 pointer-events-none">
-        <div
-          className={cn(
-            "pointer-events-auto flex items-center gap-3.5 rounded-lg  px-5 pr-2.5 py-2",
-            "bg-gradient-to-r from-50% from-[rgba(26,22,20,0.95)] to-80% to-transparent ",
-            "transition-all duration-500",
-            scrolled ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0",
-          )}
-        >
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[rgba(255,223,181,0.1)] grid place-items-center flex-shrink-0">
-              <Calendar className="w-3 h-3 text-secondary" />
-            </div>
-            <div className="leading-tight">
-              <span className="block text-[0.62rem] text-muted/80 uppercase tracking-widest">
-                Last Modified
-              </span>
-              <span className="text-[0.78rem] font-medium text-secondary">
-                December 2, 2025
-              </span>
-            </div>
-            <div className="w-px h-5 bg-muted/50 mx-1" />
-          </div>
-          <div className=" gap-2 flex justify-between items-center">
-            <Button asChild size="sm" className="gap-1.5 h-8 px-2 text-xs">
-              <Link href="/">
-                <Home className="w-3 h-3" />
-                Home
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="gap-1.5 h-8 px-2 text-xs"
-            >
-              <Link prefetch={true} href="/terms-of-service">
-                <FileSymlink className="w-3 h-3" />
-
-                {isMobile ? `Terms...` : "Terms of Service"}
-              </Link>
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -1,21 +1,32 @@
 import MaxWContainer from "@/components/ui/MaxWContainer";
 
-export default function NoteLoadingSkeletonUI() {
+function Skeleton({ className = "" }: { className?: string }) {
   return (
-    <MaxWContainer>
-      <div className="animate-pulse my-10">
-        <div className="h-6 bg-primary/20 rounded-lg mb-4 w-1/2"></div>
-        <div className="h-4 bg-primary/20 rounded-lg mb-2 w-3/4"></div>
-        <div className="h-32 bg-primary/20 rounded-lg mb-4 w-full"></div>
-        <div className="h-4 bg-primary/20 rounded-lg mb-2 w-5/6"></div>
-        <div className="h-4 bg-primary/20 rounded-lg mb-2 w-2/3"></div>
-        <div className="h-4 bg-primary/20 rounded-lg mb-2 w-1/4"></div>
+    <div className={`bg-primary/20 rounded-md animate-pulse ${className}`} />
+  );
+}
+
+function ParagraphSkeleton() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-11/12" />
+      <Skeleton className="h-4 w-10/12" />
+      <Skeleton className="h-4 w-9/12" />
+    </div>
+  );
+}
+
+export default function Loading() {
+  return (
+    <MaxWContainer className="relative w-[900px] my-8 space-y-5">
+      <div className="mb-6">
+        <Skeleton className="h-8 w-2/3 mb-3" />
+        <Skeleton className="h-4 w-48" />
       </div>
-      <div className="animate-pulse my-10">
-        <div className="h-6 bg-primary/20 rounded-lg mb-4 w-1/2"></div>
-        <div className="h-4 bg-primary/20 rounded-lg mb-2 w-3/4"></div>
-        <div className="h-4 bg-primary/20 rounded-lg mb-2 w-1/4"></div>
-      </div>
+      <ParagraphSkeleton />
+      <div className="h-40 rounded-lg bg-primary/10 animate-pulse" />
+      <ParagraphSkeleton />
     </MaxWContainer>
   );
 }
