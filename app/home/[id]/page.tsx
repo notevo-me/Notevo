@@ -1,40 +1,19 @@
-"use client";
-
+import { redirect } from "next/navigation";
 import type { Id } from "@/convex/_generated/dataModel";
 import WorkingSpacePageClient from "./WorkingSpacePageClient";
-import { useConvexAuth } from "convex/react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
 
-export default function WorkingSpacePage() {
-  const router = useRouter();
-  const params = useParams();
-  const { isAuthenticated, isLoading } = useConvexAuth();
+export default async function WorkingSpacePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  const workingSpaceId = useMemo(() => {
-    const raw = (params as any)?.id;
-    if (typeof raw === "string") return raw as Id<"workingSpaces">;
-    if (Array.isArray(raw) && typeof raw[0] === "string")
-      return raw[0] as Id<"workingSpaces">;
-    return null;
-  }, [params]);
+  if (!id) {
+    redirect("/home");
+  }
 
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isAuthenticated) {
-      router.replace("/signup");
-      router.refresh();
-    }
-  }, [isAuthenticated, isLoading, router]);
-
-  useEffect(() => {
-    if (workingSpaceId === null) {
-      router.replace("/home");
-      router.refresh();
-    }
-  }, [router, workingSpaceId]);
-
-  if (isLoading || !isAuthenticated || workingSpaceId === null) return null;
-
-  return <WorkingSpacePageClient workingSpaceId={workingSpaceId} />;
+  return (
+    <WorkingSpacePageClient workingSpaceId={id as Id<"workingSpaces">} />
+  );
 }

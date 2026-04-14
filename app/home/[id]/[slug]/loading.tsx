@@ -19,7 +19,7 @@ function ParagraphSkeleton() {
 
 export default function Loading() {
   return (
-    <MaxWContainer className="relative my-8 space-y-5">
+    <MaxWContainer className="relative w-[900px] my-8 space-y-5">
       <div className="mb-6">
         <Skeleton className="h-8 w-2/3 mb-3" />
         <Skeleton className="h-4 w-48" />
