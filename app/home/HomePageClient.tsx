@@ -44,14 +44,10 @@ const homeMemoryCache: {
   pinnedNotes?: any[];
 } = {};
 
-// ─── Zod Schemas ───────────────────────────────────────────────────────────────
-
 const workspaceNameSchema = z
   .string()
   .min(1, "Name cannot be empty")
   .max(30, "Name must be 30 characters or less");
-
-// ─── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function HomePageClient() {
   const viewerQuery = useQuery(api.users.viewer, {});
@@ -246,8 +242,6 @@ export default function HomePageClient() {
   );
 }
 
-// ─── Skeletons ─────────────────────────────────────────────────────────────────
-
 function WorkspaceCardSkeleton() {
   return (
     <Card className="relative overflow-hidden bg-card/90 backdrop-blur-sm border-border flex-shrink-0 w-[300px] h-fit">
@@ -290,8 +284,6 @@ function NoteCardSkeleton() {
     </Card>
   );
 }
-
-// ─── Slider ────────────────────────────────────────────────────────────────────
 
 function Slider({ children }: { children: React.ReactNode }) {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -385,8 +377,6 @@ function Slider({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-// ─── Workspace Card ────────────────────────────────────────────────────────────
 
 interface Workspace {
   _id: Id<"workingSpaces">;
@@ -559,8 +549,6 @@ function WorkspaceCard({
     </Card>
   );
 }
-
-// ─── Note Card ─────────────────────────────────────────────────────────────────
 
 interface Note {
   _id: Id<"notes">;
