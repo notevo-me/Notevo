@@ -929,7 +929,30 @@ html {
 }
 
 
+/* Responsive YouTube Embed */
+[data-youtube-video] {
+  position: relative;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 1.5rem 0 !important;
+  padding: 0 !important;
+}
 
+[data-youtube-video] iframe {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  border-radius: 12px !important;
+  border: 1px solid hsl(var(--muted)) !important;
+  display: block !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  [data-youtube-video] iframe {
+    border-radius: 8px !important;
+  }
+}
 
 @layer base {
   body {
