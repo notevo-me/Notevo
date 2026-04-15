@@ -11,7 +11,7 @@ export default async function NotePage({
   const noteId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : null;
 
   if (!noteId) {
-    redirect("/home");
+    redirect("/");
   }
 
   return <NotePageClient noteId={noteId as Id<"notes">} />;

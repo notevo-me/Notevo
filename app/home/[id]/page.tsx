@@ -10,10 +10,8 @@ export default async function WorkingSpacePage({
   const { id } = await params;
 
   if (!id) {
-    redirect("/home");
+    redirect("/");
   }
 
-  return (
-    <WorkingSpacePageClient workingSpaceId={id as Id<"workingSpaces">} />
-  );
+  return <WorkingSpacePageClient workingSpaceId={id as Id<"workingSpaces">} />;
 }
