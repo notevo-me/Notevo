@@ -64,7 +64,7 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
           open && !isMobile ? `rounded-tl-lg border-t border-l mt-3` : ""
         } rounded-none`}
       >
-        <div className="z-[10] relative w-full flex items-center justify-start px-5 gap-3 mx-auto rounded-tl-lg border-none py-2.5 ">
+        <div className="z-[10] relative w-full flex items-center justify-start px-4 gap-3 mx-auto rounded-tl-lg border-none py-2.5 ">
           <div className="flex justify-between items-center w-full">
             <div className="flex justify-start items-center gap-3">
               {(!open || isMobile) && <SidebarTrigger />}
@@ -108,19 +108,13 @@ const HomeContent = memo(({ children }: { children: ReactNode }) => {
 
 HomeContent.displayName = "homeContent";
 
-const HomeClientLayout = memo(
-  ({
-    children,
-  }: {
-    children: ReactNode;
-  }) => {
-    return (
-      <SidebarProvider>
-        <HomeContent>{children}</HomeContent>
-      </SidebarProvider>
-    );
-  },
-);
+const HomeClientLayout = memo(({ children }: { children: ReactNode }) => {
+  return (
+    <SidebarProvider>
+      <HomeContent>{children}</HomeContent>
+    </SidebarProvider>
+  );
+});
 
 HomeClientLayout.displayName = "homeClientLayout";
 

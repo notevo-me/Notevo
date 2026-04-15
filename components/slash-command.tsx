@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { createRoot } from "react-dom/client";
 import {
   CheckSquare,
   Code,
@@ -15,7 +17,109 @@ import {
 import { createSuggestionItems } from "novel";
 import { Command, renderItems } from "novel";
 import { uploadFn } from "./image-upload";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { z } from "zod";
 
+const youtubeUrlSchema = z
+  .string()
+  .refine(
+    (url) =>
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|shorts\/)|youtu\.be\/)[-\w]{11}/.test(
+        url,
+      ),
+    { message: "Please enter a valid YouTube URL." },
+  );
+
+function YoutubeDialog({
+  onConfirm,
+  onClose,
+}: {
+  onConfirm: (url: string) => void;
+  onClose: () => void;
+}) {
+  const [url, setUrl] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const validate = (value: string): boolean => {
+    const result = youtubeUrlSchema.safeParse(value);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+      return false;
+    }
+    setError(null);
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (validate(url)) {
+      onConfirm(url);
+      onClose();
+    }
+  };
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Embed YouTube Video</DialogTitle>
+          <DialogDescription>
+            Paste a YouTube URL to embed it in the editor.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-1">
+          <Input
+            placeholder="https://www.youtube.com/watch?v=..."
+            value={url}
+            onChange={(e) => {
+              setUrl(e.target.value);
+              if (error) validate(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSubmit();
+            }}
+            className={
+              error ? "border-destructive focus-visible:ring-destructive" : ""
+            }
+            autoFocus
+          />
+          {error && <p className="text-sm text-destructive">{error}</p>}
+        </div>
+        <div className="flex justify-end gap-2 mt-2">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            disabled={!youtubeUrlSchema.safeParse(url).success}
+            onClick={handleSubmit}
+          >
+            Embed
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function openYoutubeDialog(onConfirm: (url: string) => void) {
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+  const root = createRoot(container);
+
+  const cleanup = () => {
+    root.unmount();
+    container.remove();
+  };
+
+  root.render(<YoutubeDialog onConfirm={onConfirm} onClose={cleanup} />);
+}
 export const suggestionItems = createSuggestionItems([
   {
     title: "Text",
@@ -149,15 +253,10 @@ export const suggestionItems = createSuggestionItems([
     searchTerms: ["youtube", "video", "embed"],
     icon: <Youtube className="w-5 h-5" />,
     command: ({ editor, range }: any) => {
-      const url = prompt("Enter YouTube URL:");
-      if (url) {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setYoutubeVideo({ src: url })
-          .run();
-      }
+      editor.chain().focus().deleteRange(range).run();
+      openYoutubeDialog((url) => {
+        editor.chain().focus().setYoutubeVideo({ src: url }).run();
+      });
     },
   },
   {

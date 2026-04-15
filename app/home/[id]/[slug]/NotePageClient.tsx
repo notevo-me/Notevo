@@ -132,7 +132,7 @@ export default function NotePageClient({ noteId }: { noteId: Id<"notes"> }) {
   return (
     <div
       className={cn(
-        noteWidth === "false" ? "w-[900px] " : "px-4",
+        noteWidth === "false" ? " Desktop:w-[900px] w-full px-4" : "px-6",
         " pb-28 mx-auto",
       )}
     >
