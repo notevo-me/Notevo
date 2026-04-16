@@ -177,7 +177,7 @@ const TailwindAdvancedEditor = ({
             }}
             slotAfter={<ImageResizer />}
           >
-            <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-lg border border-border bg-muted px-0.5 py-2 transition-all scroll-smooth scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-lg border border-border bg-muted px-1 py-1 transition-all scroll-smooth scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               <EditorCommandEmpty className="px-2 text-muted-foreground">
                 No results
               </EditorCommandEmpty>
@@ -186,14 +186,14 @@ const TailwindAdvancedEditor = ({
                   <EditorCommandItem
                     value={item.title}
                     onCommand={(val) => item.command(val)}
-                    className="flex w-full items-center space-x-2 rounded-lg px-2 py-1 text-left text-sm text-foreground hover:bg-primary/10 aria-selected:bg-primary/10"
+                    className="flex w-full items-center space-x-2.5 rounded-lg mb-1.5 px-1 py-1 text-left text-sm text-foreground hover:bg-primary/10 aria-selected:bg-primary/10"
                     key={item.title}
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg text-primary">
+                    <div className="flex h-8 w-8 items-center justify-center border border-primary/10 rounded-lg text-primary">
                       {item.icon}
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">
+                      <p className="font-medium text-xs text-foreground">
                         {item.title}
                       </p>
                       <p className="text-xs text-muted-foreground">
