@@ -357,6 +357,12 @@ html {
   font-weight: bold;
 }
 
+hr {
+  border: none !important;
+  border-top: 2px solid hsl(var(--border)) !important;
+  margin: 2rem 0 !important;
+}
+
 .ProseMirror p.is-empty:not(.is-editor-empty)::before {
   content: attr(data-placeholder);
   float: left;
