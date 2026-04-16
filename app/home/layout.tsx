@@ -18,7 +18,7 @@ export default async function HomeLayout({
   children: ReactNode;
 }) {
   if (!(await isAuthenticatedNextjs())) {
-    redirect("/signup");
+    redirect("/");
   }
 
   return <HomeClientLayout>{children}</HomeClientLayout>;
