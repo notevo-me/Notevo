@@ -1165,8 +1165,7 @@ const AppSidebar = React.memo(function AppSidebar() {
     setIsSigningOut(true);
     try {
       await signOut();
-      router.replace("/");
-      router.refresh();
+      redirect("/");
     } catch (error) {
       console.error("Error signing out:", error);
     } finally {
