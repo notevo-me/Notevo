@@ -184,7 +184,7 @@ export default function SignInPage() {
                         handleLinkSent={() => setStep("linkSent")}
                       />
                       <div className=" relative py-3 ">
-                        <hr className=" border-primary/20" />
+                        <hr className=" border-primary/20 !my-0" />
                         <span className=" text-sm bg-background absolute top-2/4 -translate-y-1/2 left-2/4 -translate-x-1/2 z-10 px-6 text-muted-foreground">
                           OTHER OPTIONS
                         </span>
