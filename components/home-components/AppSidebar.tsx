@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   FolderClosed,
+  FolderOpen,
 } from "lucide-react";
 import { TbSelector } from "react-icons/tb";
 import {
@@ -759,7 +760,7 @@ const WorkspaceItem = memo(
                         className="flex items-center gap-2 flex-grow min-w-0"
                       >
                         {isHovered || isActive ? (
-                          <ChevronRight
+                          <FolderOpen
                             size="16"
                             className="flex-shrink-0 text-primary"
                           />
